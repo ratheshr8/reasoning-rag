@@ -1,3 +1,5 @@
+<!-- Published to https://github.com/ratheshr8/ratheshr8 (special profile README). Keep this draft in sync when profile claims change. -->
+
 # Rathesh R
 
 **AI Architecture & Engineering | Agentic Systems | AI Governance**

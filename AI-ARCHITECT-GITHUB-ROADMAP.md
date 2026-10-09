@@ -686,8 +686,8 @@ Use this prompt as the standing project context, then append one phase-specific 
 
 ## 20. Immediate next actions
 
-1. Publish the reviewed [`docs/profile/GITHUB_PROFILE_README.md`](docs/profile/GITHUB_PROFILE_README.md) to `ratheshr8/ratheshr8` (replace the stale Flutter bio).
-2. Keep this internal roadmap in the flagship repo; do not promote it as the profile landing page.
+1. ~~Publish profile README to `ratheshr8/ratheshr8`~~ — done (replaces the stale Flutter bio; draft remains in [`docs/profile/GITHUB_PROFILE_README.md`](docs/profile/GITHUB_PROFILE_README.md)).
+2. **Manual (GitHub UI):** pin `ratheshr8/reasoning-rag` on the profile (API cannot set pins).
 3. Align LinkedIn/website copy with shipped `v0.1.0` artifacts only (demo, eval, threat model).
 4. Do not pin empty complementary repositories; M8 requires its own release bar.
 

@@ -25,7 +25,7 @@ Each skill is proven only when the artifact exists. Profile copy must not presen
 
 **Next public proofs**
 
-1. **M7 — Narrative alignment:** profile README, LinkedIn/website copy matched to shipped artifacts only.
+1. **M7 — Narrative alignment:** profile README published; pin `reasoning-rag` in the GitHub UI; keep LinkedIn/website copy matched to shipped artifacts only.
 2. **M8 — Complementary repo:** only after its own release bar (not empty shells).
 
 Supporting GitHub repositories (governance, agentic SDLC, healthcare, harness, control plane) stay backlog until **M5** and are never pinned empty.
