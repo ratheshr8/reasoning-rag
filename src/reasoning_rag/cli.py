@@ -14,7 +14,8 @@ from reasoning_rag import __version__
 from reasoning_rag.config import load_settings
 from reasoning_rag.ingestion import IngestionError, ingest_markdown_path
 from reasoning_rag.logging_setup import configure_logging, get_logger
-from reasoning_rag.models.common import AccessClassification
+from reasoning_rag.models.common import AccessClassification, RetrievalMode
+from reasoning_rag.qa import ask_document
 from reasoning_rag.tree import TreeBuildError, build_document_tree, render_tree_text
 from reasoning_rag.tree.serialize import dump_tree_json, write_tree_json
 
@@ -243,6 +244,82 @@ def tree_cmd(
         typer.echo(dump_tree_json(tree))
     else:
         typer.echo(render_tree_text(tree, include_summaries=show_summaries or summarize))
+
+
+@app.command("ask")
+def ask_cmd(
+    path: Annotated[
+        Path,
+        typer.Argument(exists=False, readable=False, help="Path to a Markdown (.md) file."),
+    ],
+    question: Annotated[
+        str,
+        typer.Option("--question", "-q", help="Question to answer from the document."),
+    ],
+    output: Annotated[
+        Path | None,
+        typer.Option("--output", "-o", help="Write AskResult JSON (includes trace)."),
+    ] = None,
+    mode: Annotated[
+        RetrievalMode,
+        typer.Option("--mode", help="Retrieval mode for this run."),
+    ] = RetrievalMode.TREE_FIRST,
+    synthetic: Annotated[
+        bool,
+        typer.Option("--synthetic", help="Mark access_classification as synthetic."),
+    ] = False,
+) -> None:
+    """Answer a question with citations, or abstain when evidence is weak."""
+    log = get_logger(__name__, component="cli")
+    try:
+        settings = load_settings()
+    except ValidationError as exc:
+        _print_validation_error(exc)
+        raise typer.Exit(code=2) from exc
+
+    classification = (
+        AccessClassification.SYNTHETIC if synthetic else AccessClassification.PUBLIC
+    )
+    try:
+        result = ask_document(
+            path,
+            question,
+            settings=settings,
+            access_classification=classification,
+            retrieval_mode=mode,
+        )
+    except IngestionError as exc:
+        err_console.print(f"[bold red]Ingestion failed[/bold red] ({exc.code}): {exc.message}")
+        raise typer.Exit(code=1) from exc
+    except (TreeBuildError, ValueError) as exc:
+        message = getattr(exc, "message", str(exc))
+        code = getattr(exc, "code", "ask_error")
+        err_console.print(f"[bold red]Ask failed[/bold red] ({code}): {message}")
+        raise typer.Exit(code=1) from exc
+
+    payload = result.model_dump_json(indent=2)
+    if output is not None:
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(payload + "\n", encoding="utf-8")
+        typer.echo(f"wrote {output}")
+
+    log.info(
+        "ask_ok trace_id=%s abstained=%s evidence=%s mode=%s",
+        result.trace_id,
+        result.answer.abstained,
+        len(result.evidence),
+        result.retrieval_mode.value,
+    )
+
+    if result.answer.abstained:
+        typer.echo(f"ABSTAIN: {result.answer.abstention_reason}")
+    else:
+        typer.echo(result.answer.text)
+        for link in result.answer.claim_links:
+            typer.echo(f"  cite: {', '.join(link.evidence_ids)}")
+    if output is None:
+        typer.echo("---")
+        typer.echo(payload)
 
 
 if __name__ == "__main__":

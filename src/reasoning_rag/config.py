@@ -39,6 +39,9 @@ class Settings(BaseSettings):
     tree_max_nodes: int = Field(default=500, ge=1, le=50_000)
     tree_max_summaries: int = Field(default=64, ge=0, le=50_000)
     tree_summary_max_chars: int = Field(default=240, ge=32, le=4_000)
+    retrieve_top_k: int = Field(default=3, ge=1, le=50)
+    retrieve_min_score: float = Field(default=0.2, ge=0.0, le=10.0)
+    evidence_max_chars: int = Field(default=1200, ge=64, le=20_000)
 
     @field_validator("data_dir", "store_dir", mode="before")
     @classmethod

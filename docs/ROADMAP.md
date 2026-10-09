@@ -21,11 +21,11 @@ Each skill is proven only when the artifact exists. Profile copy must not presen
 
 ## Now vs next
 
-**Now (Phase 3 / M2):** heading-based knowledge tree with stable IDs, optional fixture summaries, JSON round-trip, and `reasoning-rag tree` visualization. See [ADR 0004](adr/0004-tree-storage.md).
+**Now (Phase 4 / M3):** tree-first and lexical retrieval, evidence assembly, extractive cited answers, abstention, and `reasoning-rag ask`. See [ADR 0005](adr/0005-retrieval-baselines.md) and [`data/corpus/v0/cases.json`](../data/corpus/v0/cases.json).
 
 **Next public proofs**
 
-1. **Phase 4 / M3 — Grounded baseline:** cited answer plus abstention on a known unanswerable question.
+1. **Phase 5 — Planned retrieval:** query analysis and bounded planner.
 2. **M5 — Measured system:** reproducible eval report with cost and latency.
 3. **M6 — Public beta:** tagged release, security notes, clean-clone quickstart.
 

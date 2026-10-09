@@ -1,0 +1,30 @@
+{
+  "corpus_version": "v0",
+  "document": "acme-widget-spec.md",
+  "cases": [
+    {
+      "id": "case-power-voltage",
+      "question": "What supply voltage does the Acme Widget require?",
+      "answerable": true,
+      "tags": ["direct-lookup", "power"]
+    },
+    {
+      "id": "case-safety-ambient",
+      "question": "What is the maximum ambient temperature for operating the widget?",
+      "answerable": true,
+      "tags": ["direct-lookup", "safety"]
+    },
+    {
+      "id": "case-firmware-absent",
+      "question": "How do I perform firmware updates on the Acme Widget?",
+      "answerable": false,
+      "tags": ["unanswerable", "abstention"]
+    },
+    {
+      "id": "case-unrelated",
+      "question": "What is the capital of France?",
+      "answerable": false,
+      "tags": ["unanswerable", "out-of-scope"]
+    }
+  ]
+}

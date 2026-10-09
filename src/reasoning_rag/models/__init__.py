@@ -19,9 +19,11 @@ from reasoning_rag.models.normalized import (
 )
 from reasoning_rag.models.query import QueryAnalysis
 from reasoning_rag.models.retrieval import RetrievalBudgets, RetrievalPlan, RetrievalStep
+from reasoning_rag.models.trace import AskResult, TraceEvent
 from reasoning_rag.models.tree import DocumentTree
 
 __all__ = [
+    "AskResult",
     "AccessClassification",
     "Answer",
     "ClaimEvidenceLink",
@@ -41,4 +43,5 @@ __all__ = [
     "RetrievalStep",
     "SchemaVersion",
     "SourceRange",
+    "TraceEvent",
 ]

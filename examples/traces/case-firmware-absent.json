@@ -1,0 +1,44 @@
+{
+  "schema_version": "v1",
+  "trace_id": "trace.example0002",
+  "question": "How do I perform firmware updates on the Acme Widget?",
+  "document_id": "doc.acme-widget-spec.example",
+  "retrieval_mode": "tree-first",
+  "evidence": [
+    {
+      "schema_version": "v1",
+      "id": "ev.0000",
+      "document_id": "doc.acme-widget-spec.example",
+      "node_id": "doc.acme-widget-spec.example:sec:0007",
+      "exact_text": "### Firmware updates\n\nFirmware updates are described in a separate document that is intentionally\nabsent from this corpus so unanswerable questions can be tested.",
+      "source_range": {
+        "start_offset": 0,
+        "end_offset": 0,
+        "section_path": "Firmware updates",
+        "page": null
+      },
+      "provenance": "tree-section",
+      "relevance_rationale": "example trace placeholder; regenerate with CLI for live offsets"
+    }
+  ],
+  "answer": {
+    "schema_version": "v1",
+    "text": "",
+    "claim_links": [],
+    "limitations": [
+      "document states the requested information is elsewhere/absent"
+    ],
+    "abstained": true,
+    "abstention_reason": "the corpus indicates the answer is not present in this document",
+    "trace_id": "trace.example0002"
+  },
+  "events": [
+    {
+      "component": "answer",
+      "action": "abstained",
+      "detail": {
+        "note": "illustrative abstention example"
+      }
+    }
+  ]
+}

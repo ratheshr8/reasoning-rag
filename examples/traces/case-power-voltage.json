@@ -1,0 +1,51 @@
+{
+  "schema_version": "v1",
+  "trace_id": "trace.example0001",
+  "question": "What supply voltage does the Acme Widget require?",
+  "document_id": "doc.acme-widget-spec.example",
+  "retrieval_mode": "tree-first",
+  "evidence": [
+    {
+      "schema_version": "v1",
+      "id": "ev.0000",
+      "document_id": "doc.acme-widget-spec.example",
+      "node_id": "doc.acme-widget-spec.example:sec:0002",
+      "exact_text": "## Power requirements\n\nThe widget requires a 5V DC supply at a maximum of 500 mA. Peak inrush current\nmust remain below 750 mA for no more than 10 milliseconds.",
+      "source_range": {
+        "start_offset": 0,
+        "end_offset": 0,
+        "section_path": "Power requirements",
+        "page": null
+      },
+      "provenance": "tree-section",
+      "relevance_rationale": "example trace placeholder; regenerate with CLI for live offsets"
+    }
+  ],
+  "answer": {
+    "schema_version": "v1",
+    "text": "The widget requires a 5V DC supply at a maximum of 500 mA.",
+    "claim_links": [
+      {
+        "claim": "The widget requires a 5V DC supply at a maximum of 500 mA.",
+        "evidence_ids": ["ev.0000"]
+      }
+    ],
+    "limitations": [
+      "Example trace checked into the repo for illustration; regenerate for exact offsets."
+    ],
+    "abstained": false,
+    "abstention_reason": null,
+    "trace_id": "trace.example0001"
+  },
+  "events": [
+    {
+      "component": "retrieval",
+      "action": "selected_nodes",
+      "detail": {
+        "mode": "tree-first",
+        "selector": "tree-first",
+        "note": "illustrative example"
+      }
+    }
+  ]
+}
