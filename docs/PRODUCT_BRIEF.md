@@ -1,6 +1,6 @@
 # Product brief — reasoning-rag
 
-**Status:** prototype (Phase 8 — local demo / API)  
+**Status:** prototype (Phase 9 / `v0.1.0` — hardening and first public tag)  
 **Owner:** Rathesh R (`ratheshr8`)  
 **Audience:** hiring managers, AI engineers, and peers evaluating architecture judgment
 

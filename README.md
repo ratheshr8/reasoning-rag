@@ -1,6 +1,6 @@
 # reasoning-rag
 
-**Status:** prototype (Phase 8 — local demo and API boundary)
+**Status:** prototype (`v0.1.0`)
 
 Hierarchy-aware document question answering: navigate a document tree, gather evidence, cite sources, and abstain when evidence is weak.
 
@@ -11,12 +11,12 @@ This is an independent project. It may study public ideas such as hierarchical d
 - End-to-end tree-first ask path with planning, multi-hop navigation, and verification
 - Evaluation harness (`eval-v0`) for tree-first and lexical baselines
 - Local demo UI + validated API (`/`, `/api/ask`, `/api/samples`, `/docs`)
-- Clear upload limits and provider notice (fixture = local processing)
+- Clear upload limits, provider notice, threat model, and support status
 
 ## What is not implemented yet
 
-- Release hardening / tagged public beta polish
-- Live vector baseline and hosted multi-user deployment
+- Hosted multi-user deployment and authentication
+- Live vector baseline under the same evaluation protocol
 
 ## Retrieval mode
 
@@ -48,12 +48,15 @@ Fixture provider keeps document text local. If you change `REASONING_RAG_MODEL_P
 1. [Product brief](docs/PRODUCT_BRIEF.md)
 2. [Public roadmap](docs/ROADMAP.md)
 3. [Evaluation protocol](docs/EVALUATION.md)
-4. [ADR 0009 — demo and API](docs/adr/0009-demo-and-api.md)
+4. [Threat model](docs/THREAT_MODEL.md)
+5. [Limitations](docs/LIMITATIONS.md)
+6. [Support status](docs/SUPPORT.md)
+7. [Changelog](CHANGELOG.md)
+8. [Security](SECURITY.md)
 
 ## Limitations
 
-- Local prototype only; not a multi-tenant production service
-- Markdown only; sample corpus is synthetic / CC0-1.0
+See [docs/LIMITATIONS.md](docs/LIMITATIONS.md). Short version: local prototype, Markdown only, synthetic corpus (CC0-1.0).
 
 ## License
 

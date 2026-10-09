@@ -7,12 +7,21 @@ If you find a vulnerability in this repository, open a private GitHub security a
 ## Scope notes
 
 - This project is a **prototype**. It is not a production multi-tenant service.
-- Treat document content as untrusted input (prompt-injection risk).
-- Do not send confidential documents to external model providers unless you intentionally configure that and accept the risk.
-- Default examples and evaluation fixtures must be synthetic or redistributable public documents only.
+- Treat document content as untrusted input (prompt-injection risk). See [docs/THREAT_MODEL.md](docs/THREAT_MODEL.md).
+- Do not send confidential documents to external model providers unless you intentionally configure that and accept the risk. The demo surfaces a provider notice when the provider is not `fixture`.
+- Default examples and evaluation fixtures are synthetic or redistributable public documents only (CC0-1.0 corpus v0).
+
+## Controls in this release
+
+- Upload size (`max_upload_bytes`) and Markdown extension allow-list
+- Sample documents resolved from a server-side catalog (no client path)
+- Citation resolution before claims are kept
+- Placeholder API key rejection (`changeme`, etc.)
+- Localhost default for `reasoning-rag serve`
+- CI secret scan hook (gitleaks, best-effort)
 
 ## Maintainer practices
 
 - Secrets belong in environment variables or a secret manager; `.env` is gitignored.
 - Prefer fixture/mock model mode for local development when no API access is needed.
-- Citation resolution and upload limits are part of later phases; until then, assume parsers and model calls are incomplete and unsafe for untrusted uploads at scale.
+- Review [docs/LIMITATIONS.md](docs/LIMITATIONS.md) and [docs/SUPPORT.md](docs/SUPPORT.md) before exposing the demo beyond your machine.

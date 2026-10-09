@@ -21,11 +21,12 @@ Each skill is proven only when the artifact exists. Profile copy must not presen
 
 ## Now vs next
 
-**Now (Phase 8):** local demo UI and validated API (`reasoning-rag serve`), with upload limits and provider notices. See [ADR 0009](adr/0009-demo-and-api.md).
+**Now (Phase 9 / M6):** threat model, limitations/support docs, security regressions, and tagged prototype `v0.1.0`. See [ADR 0010](adr/0010-hardening-and-release.md).
 
 **Next public proofs**
 
-1. **Phase 9 / M6 — Public beta:** threat-model review, hardening, tagged release, security notes.
+1. **M7 — Narrative alignment:** profile README, LinkedIn/website copy matched to shipped artifacts only.
+2. **M8 — Complementary repo:** only after its own release bar (not empty shells).
 
 Supporting GitHub repositories (governance, agentic SDLC, healthcare, harness, control plane) stay backlog until **M5** and are never pinned empty.
 

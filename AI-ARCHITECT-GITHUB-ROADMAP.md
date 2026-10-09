@@ -686,12 +686,10 @@ Use this prompt as the standing project context, then append one phase-specific 
 
 ## 20. Immediate next actions
 
-1. Review [`docs/profile/GITHUB_PROFILE_README.md`](docs/profile/GITHUB_PROFILE_README.md) and verify each claim, then publish it to `ratheshr8/ratheshr8`.
-2. Create `ratheshr8/reasoning-rag` on GitHub and push this workspace with a truthful prototype README.
-3. Keep this internal roadmap in the flagship repo; do not promote it as the profile landing page.
-4. Add the first public Markdown spec sample and dataset card; keep the selection recorded in the product brief.
-5. Begin Cursor Phase 1 (skeleton and contracts), then proceed one accepted phase at a time.
-6. Aim the first public skill proofs at **M2/M3** (tree + cited answer/abstain), not a multi-repo portfolio.
+1. Publish the reviewed [`docs/profile/GITHUB_PROFILE_README.md`](docs/profile/GITHUB_PROFILE_README.md) to `ratheshr8/ratheshr8` (replace the stale Flutter bio).
+2. Keep this internal roadmap in the flagship repo; do not promote it as the profile landing page.
+3. Align LinkedIn/website copy with shipped `v0.1.0` artifacts only (demo, eval, threat model).
+4. Do not pin empty complementary repositories; M8 requires its own release bar.
 
 ---
 

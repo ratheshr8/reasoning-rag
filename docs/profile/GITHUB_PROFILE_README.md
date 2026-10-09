@@ -8,22 +8,20 @@ GitHub: [ratheshr8](https://github.com/ratheshr8) · Website: [ratheshworld.com]
 
 ## What I build
 
-Systems that can show their work: inspectable retrieval, bounded agent behavior, citations, and honest failure modes. The current flagship is a reasoning-first document QA prototype, not a production deployment.
+Systems that can show their work: inspectable retrieval, bounded agent behavior, citations, and honest failure modes. The current flagship is a reasoning-first document QA **prototype**, not a production deployment.
 
 ## Skills demonstrated
 
-Until the flagship ships traces and evals, these point at **planned** artifacts. Replace “planned” with links as soon as they exist.
-
-- **AI system design** — planned: architecture diagram and ADRs in [`reasoning-rag`](https://github.com/ratheshr8/reasoning-rag) (see [ADR 0001](https://github.com/ratheshr8/reasoning-rag/blob/main/docs/adr/0001-project-scope.md) once published)
-- **Retrieval and evaluation** — planned: tree-first vs lexical baselines and a versioned report
-- **Governance and security** — planned: abstention, threat model, citation validation
+- **AI system design** — ADRs and architecture notes in [`reasoning-rag`](https://github.com/ratheshr8/reasoning-rag) ([ADR 0001](https://github.com/ratheshr8/reasoning-rag/blob/master/docs/adr/0001-project-scope.md))
+- **Retrieval and evaluation** — tree-first vs lexical baselines and versioned [`eval-v0`](https://github.com/ratheshr8/reasoning-rag/blob/master/docs/EVALUATION.md)
+- **Governance and security** — abstention, [threat model](https://github.com/ratheshr8/reasoning-rag/blob/master/docs/THREAT_MODEL.md), citation validation
 - **Communication** — this profile and the flagship README, kept aligned with [ratheshworld.com](https://ratheshworld.com)
 
 ## Featured projects
 
 | Project | Status | What to look at |
 | --- | --- | --- |
-| [reasoning-rag](https://github.com/ratheshr8/reasoning-rag) | Prototype | Hierarchy-aware document QA: product brief, scope ADR, then tree/citation/eval slices as they ship |
+| [reasoning-rag](https://github.com/ratheshr8/reasoning-rag) | Prototype `v0.1.0` | Hierarchy-aware document QA: demo (`reasoning-rag serve`), eval harness, threat model, limitations |
 
 No other repositories are featured until they meet a documented release bar (working quickstart, architecture notes, license, limitations). Empty shells are not pinned.
 
