@@ -43,6 +43,7 @@ These are real public repos with a usable README. They are samples or tools, not
 | [jira-to-jira-migration-tool](https://github.com/ratheshr8/jira-to-jira-migration-tool) | Python CLI (Apache-2.0) that moves a Jira Cloud project — issues, comments, attachments, and best-effort filters/dashboards — with Postgres checkpoints so a run can resume | README section on what the public Jira API cannot preserve (authors, timestamps, full history, admin schemes) |
 | [MordenizeCodeConvert](https://github.com/ratheshr8/MordenizeCodeConvert) | React + TypeScript UI (Apache-2.0) for code conversion through Azure OpenAI. Keys stay in a local `.env` | `npm install` / `npm run dev` in the README. This is an app shell, not a measured migration benchmark |
 | [Angular-Web-Component-Sample](https://github.com/ratheshr8/Angular-Web-Component-Sample) | Angular Elements data grid (sort, page, row selection) packaged as one JS bundle for plain HTML and Java server-rendered pages | Build (`npm run build:wc`) and the HTML embed snippet in the README |
+| [APIGateWay-Ocelot-With-JWT](https://github.com/ratheshr8/APIGateWay-Ocelot-With-JWT) | Local .NET sample: Ocelot gateway, JWT auth server, and a customers API. Demo user and signing secret are set in local appsettings, not committed | [README](https://github.com/ratheshr8/APIGateWay-Ocelot-With-JWT/blob/main/README.md) project table and the route file `APIGateway/configuration.json` |
 
 ## Reference sample
 
