@@ -21,16 +21,19 @@ from reasoning_rag.models.query import QueryAnalysis
 from reasoning_rag.models.retrieval import RetrievalBudgets, RetrievalPlan, RetrievalStep
 from reasoning_rag.models.trace import AskResult, TraceEvent
 from reasoning_rag.models.tree import DocumentTree
+from reasoning_rag.models.verification import CoverageGap, EvidenceConflict, VerificationReport
 
 __all__ = [
     "AskResult",
     "AccessClassification",
     "Answer",
     "ClaimEvidenceLink",
+    "CoverageGap",
     "Document",
     "DocumentTree",
     "EvaluationCase",
     "Evidence",
+    "EvidenceConflict",
     "Node",
     "NormalizedDocument",
     "NormalizedSection",
@@ -44,4 +47,5 @@ __all__ = [
     "SchemaVersion",
     "SourceRange",
     "TraceEvent",
+    "VerificationReport",
 ]

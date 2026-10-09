@@ -21,13 +21,12 @@ Each skill is proven only when the artifact exists. Profile copy must not presen
 
 ## Now vs next
 
-**Now (Phase 5 / M4):** typed query analysis, bounded retrieval plans, plan-guided ask, and `reasoning-rag plan`. See [ADR 0006](adr/0006-query-planning.md).
+**Now (Phase 6):** multi-hop navigation, citation verification, coverage checks, conflict surfacing, and claim mapping. See [ADR 0007](adr/0007-navigation-and-verification.md).
 
 **Next public proofs**
 
-1. **Phase 6 — Navigation and verification:** multi-hop evidence, conflict surfacing, claim mapping.
-2. **M5 — Measured system:** reproducible eval report with cost and latency.
-3. **M6 — Public beta:** tagged release, security notes, clean-clone quickstart.
+1. **Phase 7 / M5 — Measured system:** versioned eval set, baselines, reproducible report with cost/latency.
+2. **M6 — Public beta:** tagged release, security notes, clean-clone quickstart.
 
 Supporting GitHub repositories (governance, agentic SDLC, healthcare, harness, control plane) stay backlog until **M5** and are never pinned empty.
 

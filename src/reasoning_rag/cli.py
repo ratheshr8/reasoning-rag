@@ -417,6 +417,10 @@ def ask_cmd(
         typer.echo(result.answer.text)
         for link in result.answer.claim_links:
             typer.echo(f"  cite: {', '.join(link.evidence_ids)}")
+    if result.verification and result.verification.conflicts:
+        typer.echo("CONFLICTS:")
+        for conflict in result.verification.conflicts:
+            typer.echo(f"  - {conflict.topic}: {', '.join(conflict.values)}")
     if output is None:
         typer.echo("---")
         typer.echo(payload)

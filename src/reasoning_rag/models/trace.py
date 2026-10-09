@@ -9,6 +9,7 @@ from reasoning_rag.models.common import RetrievalMode, SchemaVersion
 from reasoning_rag.models.evidence import Evidence
 from reasoning_rag.models.query import QueryAnalysis
 from reasoning_rag.models.retrieval import RetrievalPlan
+from reasoning_rag.models.verification import VerificationReport
 
 
 class TraceEvent(BaseModel):
@@ -28,4 +29,5 @@ class AskResult(BaseModel):
     analysis_fallback: bool = False
     evidence: list[Evidence] = Field(default_factory=list)
     answer: Answer
+    verification: VerificationReport | None = None
     events: list[TraceEvent] = Field(default_factory=list)

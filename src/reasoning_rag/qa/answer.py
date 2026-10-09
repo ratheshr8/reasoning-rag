@@ -1,4 +1,4 @@
-"""Deterministic cited-answer and abstention builder (fixture baseline)."""
+"""Deterministic cited-answer and abstention builder with claim mapping."""
 
 from __future__ import annotations
 
@@ -25,13 +25,12 @@ def build_answer_from_evidence(
         return Answer(
             text="",
             claim_links=[],
-            limitations=["baseline retriever found insufficient lexical support"],
+            limitations=["retriever found insufficient lexical support"],
             abstained=True,
             abstention_reason="not enough evidence in the selected document sections",
             trace_id=tid,
         )
 
-    # Unanswerable cue: corpus explicitly says content is absent.
     if _looks_unanswerable(question, evidence):
         return Answer(
             text="",
@@ -44,19 +43,32 @@ def build_answer_from_evidence(
             trace_id=tid,
         )
 
-    primary = evidence[0]
-    snippet = _first_sentence(primary.exact_text)
-    terms = query_terms(question)
-    claim = snippet if snippet else primary.exact_text[:240]
-    text = claim
-    if terms:
-        text = f"{claim}"
+    claim_links: list[ClaimEvidenceLink] = []
+    for item in evidence[:3]:
+        claim = _first_sentence(item.exact_text) or item.exact_text[:240]
+        if not claim.strip():
+            continue
+        claim_links.append(ClaimEvidenceLink(claim=claim, evidence_ids=[item.id]))
+
+    if not claim_links:
+        return Answer(
+            text="",
+            claim_links=[],
+            limitations=["no extractive claims could be formed from evidence"],
+            abstained=True,
+            abstention_reason="not enough evidence in the selected document sections",
+            trace_id=tid,
+        )
+
+    # Primary answer text from the top claim; additional claims remain linked.
+    text = claim_links[0].claim
+    _ = query_terms(question)  # retained for future claim ranking hooks
 
     return Answer(
         text=text,
-        claim_links=[ClaimEvidenceLink(claim=claim, evidence_ids=[primary.id])],
+        claim_links=claim_links,
         limitations=[
-            "Phase 4 baseline: extractive answer from top evidence; not an LLM synthesis",
+            "Phase 6: extractive claims mapped to evidence; conflicts are surfaced, not merged",
         ],
         abstained=False,
         abstention_reason=None,
@@ -76,7 +88,6 @@ def _first_sentence(text: str) -> str:
 def _looks_unanswerable(question: str, evidence: list[Evidence]) -> bool:
     q = question.lower()
     if "firmware" not in q and "update procedure" not in q and "how do i update" not in q:
-        # Still check evidence for explicit absence language when question asks how-to.
         if not any(word in q for word in ("how", "where", "procedure", "steps")):
             return False
     absence_markers = (

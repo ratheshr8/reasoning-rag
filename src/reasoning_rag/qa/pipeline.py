@@ -1,4 +1,4 @@
-"""End-to-end ask pipeline: ingest → tree → analyze → plan → retrieve → answer."""
+"""End-to-end ask pipeline with multi-hop navigation and verification."""
 
 from __future__ import annotations
 
@@ -14,8 +14,15 @@ from reasoning_rag.models.tree import DocumentTree
 from reasoning_rag.planning.analyze import QueryAnalyzer, analyze_query
 from reasoning_rag.planning.planner import build_retrieval_plan
 from reasoning_rag.qa.answer import build_answer_from_evidence
+from reasoning_rag.qa.verify import (
+    check_coverage,
+    detect_conflicts,
+    map_and_verify_claims,
+    verify_evidence,
+)
 from reasoning_rag.retrieval.assemble import assemble_evidence
 from reasoning_rag.retrieval.lexical import score_nodes_lexical
+from reasoning_rag.retrieval.navigate import expand_multihop
 from reasoning_rag.retrieval.tree_walk import select_nodes_tree_first
 from reasoning_rag.tree.builder import build_document_tree
 
@@ -102,7 +109,6 @@ def ask_document(
         mode=mode,
         top_k=plan.budgets.max_nodes,
     )
-    best_score = selected[0][1] if selected else 0.0
     events.append(
         TraceEvent(
             component="retrieval",
@@ -116,6 +122,28 @@ def ask_document(
         )
     )
 
+    selected, hop_trace = expand_multihop(
+        selected,
+        analysis=analysis,
+        tree=tree,
+        normalized=normalized,
+        max_hops=cfg.nav_max_hops,
+        max_nodes=max(plan.budgets.max_nodes, cfg.nav_max_nodes),
+        min_score=cfg.retrieve_min_score,
+        use_lexical=(mode == RetrievalMode.TREE_LEXICAL),
+    )
+    events.append(
+        TraceEvent(
+            component="navigation",
+            action="multihop_expand",
+            detail={
+                "hops": hop_trace,
+                "node_ids": [node_id for node_id, _, _ in selected],
+            },
+        )
+    )
+
+    best_score = selected[0][1] if selected else 0.0
     evidence = assemble_evidence(
         selected,
         tree,
@@ -130,19 +158,49 @@ def ask_document(
         )
     )
 
-    answer = build_answer_from_evidence(
+    evidence, unresolved = verify_evidence(evidence, normalized)
+    events.append(
+        TraceEvent(
+            component="verification",
+            action="citations",
+            detail={"unresolved_citation_ids": unresolved, "kept": len(evidence)},
+        )
+    )
+
+    conflicts = detect_conflicts(evidence)
+    coverage = check_coverage(analysis, evidence)
+    events.append(
+        TraceEvent(
+            component="verification",
+            action="conflicts_and_coverage",
+            detail={
+                "conflicts": [conflict.model_dump(mode="json") for conflict in conflicts],
+                "coverage": [gap.model_dump(mode="json") for gap in coverage],
+            },
+        )
+    )
+
+    draft = build_answer_from_evidence(
         question,
         evidence,
         min_score_hint=cfg.retrieve_min_score,
         best_score=best_score,
         trace_id=trace_id,
     )
+    answer, report = map_and_verify_claims(
+        draft,
+        evidence,
+        normalized,
+        conflicts=conflicts,
+    )
+    report.coverage = coverage
     events.append(
         TraceEvent(
             component="answer",
             action="abstained" if answer.abstained else "answered",
             detail={
                 "claim_count": len(answer.claim_links),
+                "dropped_claim_count": report.dropped_claim_count,
                 "abstention_reason": answer.abstention_reason,
             },
         )
@@ -158,6 +216,7 @@ def ask_document(
         analysis_fallback=used_fallback,
         evidence=evidence,
         answer=answer,
+        verification=report,
         events=events,
     )
 

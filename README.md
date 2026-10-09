@@ -1,6 +1,6 @@
 # reasoning-rag
 
-**Status:** prototype (Phase 5 — query analysis and bounded retrieval planning)
+**Status:** prototype (Phase 6 — multi-hop navigation and verification)
 
 Hierarchy-aware document question answering: navigate a document tree, gather evidence, cite sources, and abstain when evidence is weak.
 
@@ -8,20 +8,20 @@ This is an independent project. It may study public ideas such as hierarchical d
 
 ## What works now
 
-- Markdown ingestion with provenance and heading-based knowledge trees
-- Typed query analysis with safe fallback on malformed structured output
-- Bounded retrieval plans (depth/node/model-call budgets) guiding evidence selection
-- Tree-first and lexical baselines, extractive cited answers, or abstention
+- Markdown ingestion, knowledge trees, query analysis, and bounded retrieval plans
+- Multi-hop parent/child navigation from planned seed nodes
+- Citation verification, subquestion coverage checks, and conflict surfacing
+- Claim-to-evidence mapping; unresolved claims are dropped or trigger abstention
 - CLI: `ingest`, `tree`, `plan`, `ask` (`--show-plan`)
 
 ## What is not implemented yet
 
-- Multi-hop verification / conflict surfacing, evaluation harness, demo UI
-- LLM analyzer/planner and vector baseline
+- Evaluation harness / fair baselines report, demo UI
+- LLM verifier and vector baseline
 
 ## Retrieval mode
 
-Primary path is **tree-first**, now plan-guided. Use `--mode tree-lexical` for keyword-only scoring inside the planner. Runs record mode, analysis, and plan in `AskResult`.
+Primary path is **tree-first**, plan-guided, with optional multi-hop expansion. Conflicting values are reported, not merged. Runs record analysis, plan, evidence, and `verification` on `AskResult`.
 
 ## Quickstart
 
@@ -34,12 +34,8 @@ python -m venv .venv
 pip install -e ".[dev]"
 cp .env.example .env
 
-reasoning-rag plan data/corpus/v0/acme-widget-spec.md \
-  -q "What supply voltage does the Acme Widget require?" \
-  --synthetic
-
 reasoning-rag ask data/corpus/v0/acme-widget-spec.md \
-  -q "What supply voltage does the Acme Widget require?" \
+  -q "What is the maximum ambient temperature for operating the widget?" \
   --synthetic --show-plan
 ```
 
@@ -47,12 +43,12 @@ reasoning-rag ask data/corpus/v0/acme-widget-spec.md \
 
 1. [Product brief](docs/PRODUCT_BRIEF.md)
 2. [Public roadmap](docs/ROADMAP.md)
-3. [ADR 0006 — query planning](docs/adr/0006-query-planning.md)
+3. [ADR 0007 — navigation and verification](docs/adr/0007-navigation-and-verification.md)
 4. [Corpus v0 dataset card](data/corpus/v0/DATASET_CARD.md)
 
 ## Limitations
 
-- Analyzer/planner are deterministic fixture rules, not LLM agents
+- Deterministic/fixture verification — not LLM entailment
 - Markdown only; prototype — not a production service
 - Sample corpus is synthetic / CC0-1.0
 
