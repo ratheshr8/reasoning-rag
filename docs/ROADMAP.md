@@ -21,12 +21,12 @@ Each skill is proven only when the artifact exists. Profile copy must not presen
 
 ## Now vs next
 
-**Now (Phase 6):** multi-hop navigation, citation verification, coverage checks, conflict surfacing, and claim mapping. See [ADR 0007](adr/0007-navigation-and-verification.md).
+**Now (Phase 7 / M5):** versioned `eval-v0` dataset, tree-first/lexical baselines, reproducible `reasoning-rag eval` reports with latency/cost and per-case failures. See [EVALUATION.md](EVALUATION.md) and [ADR 0008](adr/0008-evaluation-protocol.md).
 
 **Next public proofs**
 
-1. **Phase 7 / M5 — Measured system:** versioned eval set, baselines, reproducible report with cost/latency.
-2. **M6 — Public beta:** tagged release, security notes, clean-clone quickstart.
+1. **Phase 8 — Usable demo:** local demo and optional small API boundary.
+2. **Phase 9 / M6 — Public beta:** hardening, tagged release, security notes.
 
 Supporting GitHub repositories (governance, agentic SDLC, healthcare, harness, control plane) stay backlog until **M5** and are never pinned empty.
 

@@ -1,6 +1,6 @@
 # reasoning-rag
 
-**Status:** prototype (Phase 6 — multi-hop navigation and verification)
+**Status:** prototype (Phase 7 — evaluation harness and fair baselines)
 
 Hierarchy-aware document question answering: navigate a document tree, gather evidence, cite sources, and abstain when evidence is weak.
 
@@ -8,20 +8,20 @@ This is an independent project. It may study public ideas such as hierarchical d
 
 ## What works now
 
-- Markdown ingestion, knowledge trees, query analysis, and bounded retrieval plans
-- Multi-hop parent/child navigation from planned seed nodes
-- Citation verification, subquestion coverage checks, and conflict surfacing
-- Claim-to-evidence mapping; unresolved claims are dropped or trigger abstention
-- CLI: `ingest`, `tree`, `plan`, `ask` (`--show-plan`)
+- Markdown ingestion, knowledge trees, planning, multi-hop navigation, verification
+- Versioned eval dataset (`eval-v0`) with tree-first and lexical baselines
+- Reproducible reports: metrics, latency, cost (fixture=$0), per-case failures
+- Vector/hybrid baseline explicitly marked not implemented (no invented scores)
+- CLI: `ingest`, `tree`, `plan`, `ask`, `eval`
 
 ## What is not implemented yet
 
-- Evaluation harness / fair baselines report, demo UI
-- LLM verifier and vector baseline
+- Demo UI / small API, release hardening
+- Live vector baseline and paid-model cost metering
 
 ## Retrieval mode
 
-Primary path is **tree-first**, plan-guided, with optional multi-hop expansion. Conflicting values are reported, not merged. Runs record analysis, plan, evidence, and `verification` on `AskResult`.
+Primary path is **tree-first**. Evaluation compares modes under equal corpus and settings. See [docs/EVALUATION.md](docs/EVALUATION.md).
 
 ## Quickstart
 
@@ -35,20 +35,25 @@ pip install -e ".[dev]"
 cp .env.example .env
 
 reasoning-rag ask data/corpus/v0/acme-widget-spec.md \
-  -q "What is the maximum ambient temperature for operating the widget?" \
-  --synthetic --show-plan
+  -q "What supply voltage does the Acme Widget require?" \
+  --synthetic
+
+reasoning-rag eval \
+  --dataset data/eval/v0/dataset.json \
+  --modes tree-first,tree-lexical \
+  --output reports/eval-v0
 ```
 
 ## Docs
 
 1. [Product brief](docs/PRODUCT_BRIEF.md)
 2. [Public roadmap](docs/ROADMAP.md)
-3. [ADR 0007 — navigation and verification](docs/adr/0007-navigation-and-verification.md)
-4. [Corpus v0 dataset card](data/corpus/v0/DATASET_CARD.md)
+3. [Evaluation protocol](docs/EVALUATION.md)
+4. [ADR 0008 — evaluation protocol](docs/adr/0008-evaluation-protocol.md)
 
 ## Limitations
 
-- Deterministic/fixture verification — not LLM entailment
+- Fixture baselines only; vector comparison not implemented in eval-v0
 - Markdown only; prototype — not a production service
 - Sample corpus is synthetic / CC0-1.0
 

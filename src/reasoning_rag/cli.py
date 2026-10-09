@@ -14,6 +14,7 @@ from reasoning_rag import __version__
 from reasoning_rag.config import load_settings
 from reasoning_rag.ingestion import IngestionError, ingest_markdown_path
 from reasoning_rag.logging_setup import configure_logging, get_logger
+from reasoning_rag.evaluation.runner import parse_modes, run_evaluation
 from reasoning_rag.models.common import AccessClassification, RetrievalMode
 from reasoning_rag.planning import analyze_query, build_retrieval_plan, render_plan_text
 from reasoning_rag.qa import ask_document
@@ -424,6 +425,78 @@ def ask_cmd(
     if output is None:
         typer.echo("---")
         typer.echo(payload)
+
+
+@app.command("eval")
+def eval_cmd(
+    dataset: Annotated[
+        Path,
+        typer.Option(
+            "--dataset",
+            "-d",
+            help="Path to a versioned evaluation dataset JSON.",
+        ),
+    ] = Path("data/eval/v0/dataset.json"),
+    modes: Annotated[
+        str,
+        typer.Option(
+            "--modes",
+            "-m",
+            help="Comma-separated retrieval modes (tree-first,tree-lexical,hybrid-comparison).",
+        ),
+    ] = "tree-first,tree-lexical",
+    output: Annotated[
+        Path,
+        typer.Option(
+            "--output",
+            "-o",
+            help="Directory for report.json, report.md, and per-case traces.",
+        ),
+    ] = Path("reports/eval-v0"),
+) -> None:
+    """Run reproducible baseline evaluation and write a report."""
+    log = get_logger(__name__, component="cli")
+    try:
+        settings = load_settings()
+        mode_list = parse_modes(modes)
+    except ValidationError as exc:
+        _print_validation_error(exc)
+        raise typer.Exit(code=2) from exc
+    except ValueError as exc:
+        err_console.print(f"[bold red]Eval failed[/bold red]: {exc}")
+        raise typer.Exit(code=1) from exc
+
+    try:
+        report = run_evaluation(
+            dataset,
+            modes=mode_list,
+            settings=settings,
+            output_dir=output,
+            repo_root=Path.cwd(),
+            include_vector_placeholder=True,
+        )
+    except (OSError, ValidationError, ValueError) as exc:
+        err_console.print(f"[bold red]Eval failed[/bold red]: {exc}")
+        raise typer.Exit(code=1) from exc
+
+    log.info(
+        "eval_ok dataset=%s modes=%s output=%s",
+        report.get("dataset_version"),
+        ",".join(mode.value for mode in mode_list),
+        str(output),
+    )
+    typer.echo(f"wrote {output / 'report.md'}")
+    typer.echo(f"wrote {output / 'report.json'}")
+    for mode_name, payload in report["modes"].items():
+        metrics = payload.get("metrics")
+        if metrics is None:
+            typer.echo(f"{mode_name}: {payload.get('status')}")
+        else:
+            typer.echo(
+                f"{mode_name}: pass {metrics.get('pass_count')}/{metrics.get('case_count')} "
+                f"abstention_accuracy={metrics.get('abstention_accuracy'):.3f} "
+                f"latency_ms_median={metrics.get('latency_ms_median'):.1f}"
+            )
 
 
 if __name__ == "__main__":

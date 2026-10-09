@@ -1,0 +1,103 @@
+{
+  "dataset_version": "eval-v0",
+  "corpus_version": "v0",
+  "document_path": "data/corpus/v0/acme-widget-spec.md",
+  "access_classification": "synthetic",
+  "description": "Small human-authored starter set for reproducible baseline comparison.",
+  "cases": [
+    {
+      "schema_version": "v1",
+      "id": "case-power-voltage",
+      "question": "What supply voltage does the Acme Widget require?",
+      "document_ids": ["acme-widget-spec"],
+      "corpus_version": "v0",
+      "expected_evidence_sections": ["Power requirements"],
+      "expected_answer_properties": {
+        "must_contain_any": ["5V", "5 V", "5v"],
+        "expect_abstain": false,
+        "expect_conflict": false
+      },
+      "answerable": true,
+      "difficulty": "easy",
+      "tags": ["direct-lookup", "power"]
+    },
+    {
+      "schema_version": "v1",
+      "id": "case-safety-ambient",
+      "question": "What is the maximum ambient temperature for operating the widget?",
+      "document_ids": ["acme-widget-spec"],
+      "corpus_version": "v0",
+      "expected_evidence_sections": ["Safety limits", "Conflicting note (intentional)"],
+      "expected_answer_properties": {
+        "must_contain_any": ["40"],
+        "expect_abstain": false,
+        "expect_conflict": true
+      },
+      "answerable": true,
+      "difficulty": "medium",
+      "tags": ["direct-lookup", "safety", "conflict"]
+    },
+    {
+      "schema_version": "v1",
+      "id": "case-error-e01",
+      "question": "What does error code E01 mean?",
+      "document_ids": ["acme-widget-spec"],
+      "corpus_version": "v0",
+      "expected_evidence_sections": ["Appendix A — Error codes"],
+      "expected_answer_properties": {
+        "must_contain_any": ["Thermal", "thermal", "shutdown"],
+        "expect_abstain": false,
+        "expect_conflict": false
+      },
+      "answerable": true,
+      "difficulty": "easy",
+      "tags": ["table", "appendix"]
+    },
+    {
+      "schema_version": "v1",
+      "id": "case-battery-runtime",
+      "question": "How long does battery mode last at default brightness?",
+      "document_ids": ["acme-widget-spec"],
+      "corpus_version": "v0",
+      "expected_evidence_sections": ["Battery mode"],
+      "expected_answer_properties": {
+        "must_contain_any": ["6 hours", "6 hour"],
+        "expect_abstain": false,
+        "expect_conflict": false
+      },
+      "answerable": true,
+      "difficulty": "easy",
+      "tags": ["navigation", "power"]
+    },
+    {
+      "schema_version": "v1",
+      "id": "case-firmware-absent",
+      "question": "How do I perform firmware updates on the Acme Widget?",
+      "document_ids": ["acme-widget-spec"],
+      "corpus_version": "v0",
+      "expected_evidence_sections": ["Firmware updates"],
+      "expected_answer_properties": {
+        "expect_abstain": true,
+        "expect_conflict": false
+      },
+      "answerable": false,
+      "difficulty": "easy",
+      "tags": ["unanswerable", "abstention"]
+    },
+    {
+      "schema_version": "v1",
+      "id": "case-unrelated",
+      "question": "What is the capital of France?",
+      "document_ids": ["acme-widget-spec"],
+      "corpus_version": "v0",
+      "expected_evidence_sections": [],
+      "expected_answer_properties": {
+        "expect_abstain": true,
+        "expect_conflict": false
+      },
+      "answerable": false,
+      "difficulty": "easy",
+      "tags": ["unanswerable", "out-of-scope"]
+    }
+  ]
+}
