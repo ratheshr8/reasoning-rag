@@ -1,4 +1,4 @@
-"""End-to-end ask pipeline: ingest → tree → retrieve → evidence → answer."""
+"""End-to-end ask pipeline: ingest → tree → analyze → plan → retrieve → answer."""
 
 from __future__ import annotations
 
@@ -8,7 +8,11 @@ from pathlib import Path
 from reasoning_rag.config import Settings, load_settings
 from reasoning_rag.ingestion.service import ingest_markdown_path
 from reasoning_rag.models.common import AccessClassification, RetrievalMode
+from reasoning_rag.models.normalized import NormalizedDocument
 from reasoning_rag.models.trace import AskResult, TraceEvent
+from reasoning_rag.models.tree import DocumentTree
+from reasoning_rag.planning.analyze import QueryAnalyzer, analyze_query
+from reasoning_rag.planning.planner import build_retrieval_plan
 from reasoning_rag.qa.answer import build_answer_from_evidence
 from reasoning_rag.retrieval.assemble import assemble_evidence
 from reasoning_rag.retrieval.lexical import score_nodes_lexical
@@ -23,6 +27,7 @@ def ask_document(
     settings: Settings | None = None,
     access_classification: AccessClassification = AccessClassification.PUBLIC,
     retrieval_mode: RetrievalMode | None = None,
+    analyzer: QueryAnalyzer | None = None,
 ) -> AskResult:
     """Answer a question from a Markdown document with citations or abstention."""
     cfg = settings or load_settings()
@@ -55,18 +60,48 @@ def ask_document(
         )
     )
 
-    if mode == RetrievalMode.TREE_LEXICAL:
-        selected = score_nodes_lexical(
-            question, tree, normalized, top_k=cfg.retrieve_top_k
+    analysis, used_fallback, analyzer_version = analyze_query(question, analyzer=analyzer)
+    events.append(
+        TraceEvent(
+            component="query_analysis",
+            action="fallback" if used_fallback else "analyzed",
+            detail={
+                "analyzer_version": analyzer_version,
+                "intent": analysis.intent,
+                "subquestions": analysis.subquestions,
+                "used_fallback": used_fallback,
+            },
         )
-        selector = "lexical"
-    else:
-        # TREE_FIRST and HYBRID_COMPARISON use tree-first baseline for Phase 4.
-        selected = select_nodes_tree_first(
-            question, tree, normalized, top_k=cfg.retrieve_top_k
-        )
-        selector = "tree-first"
+    )
 
+    plan = build_retrieval_plan(
+        analysis,
+        tree,
+        normalized,
+        settings=cfg,
+        retrieval_mode=mode,
+    )
+    events.append(
+        TraceEvent(
+            component="planner",
+            action="planned",
+            detail={
+                "planner_version": plan.planner_version,
+                "candidate_node_ids": plan.candidate_node_ids,
+                "budgets": plan.budgets.model_dump(),
+                "steps": [step.action for step in plan.steps],
+            },
+        )
+    )
+
+    selected = _select_from_plan(
+        plan.candidate_node_ids,
+        question=analysis.normalized_query,
+        tree=tree,
+        normalized=normalized,
+        mode=mode,
+        top_k=plan.budgets.max_nodes,
+    )
     best_score = selected[0][1] if selected else 0.0
     events.append(
         TraceEvent(
@@ -74,7 +109,7 @@ def ask_document(
             action="selected_nodes",
             detail={
                 "mode": mode.value,
-                "selector": selector,
+                "selector": "plan-guided",
                 "node_ids": [node_id for node_id, _, _ in selected],
                 "scores": [score for _, score, _ in selected],
             },
@@ -118,7 +153,42 @@ def ask_document(
         question=question,
         document_id=tree.document.id,
         retrieval_mode=mode,
+        query_analysis=analysis,
+        retrieval_plan=plan,
+        analysis_fallback=used_fallback,
         evidence=evidence,
         answer=answer,
         events=events,
     )
+
+
+def _select_from_plan(
+    candidate_ids: list[str],
+    *,
+    question: str,
+    tree: DocumentTree,
+    normalized: NormalizedDocument,
+    mode: RetrievalMode,
+    top_k: int,
+) -> list[tuple[str, float, str]]:
+    """Score candidates from the plan; fall back to full scoring if the plan is empty."""
+    if mode == RetrievalMode.TREE_LEXICAL:
+        scored = score_nodes_lexical(question, tree, normalized, top_k=max(top_k * 3, top_k))
+    else:
+        scored = select_nodes_tree_first(question, tree, normalized, top_k=max(top_k * 3, top_k))
+
+    if not candidate_ids:
+        return scored[:top_k]
+
+    by_id = {node_id: (score, rationale) for node_id, score, rationale in scored}
+    selected: list[tuple[str, float, str]] = []
+    for node_id in candidate_ids:
+        if node_id in by_id:
+            score, rationale = by_id[node_id]
+            selected.append((node_id, score, rationale))
+        else:
+            selected.append((node_id, 0.0, "plan-candidate"))
+        if len(selected) >= top_k:
+            break
+    selected.sort(key=lambda item: (-item[1], item[0]))
+    return selected

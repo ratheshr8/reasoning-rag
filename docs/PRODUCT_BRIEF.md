@@ -1,6 +1,6 @@
 # Product brief — reasoning-rag
 
-**Status:** prototype (Phase 4 — cited answers / abstention)  
+**Status:** prototype (Phase 5 — query analysis / planning)  
 **Owner:** Rathesh R (`ratheshr8`)  
 **Audience:** hiring managers, AI engineers, and peers evaluating architecture judgment
 

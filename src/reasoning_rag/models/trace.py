@@ -7,6 +7,8 @@ from pydantic import BaseModel, Field
 from reasoning_rag.models.answer import Answer
 from reasoning_rag.models.common import RetrievalMode, SchemaVersion
 from reasoning_rag.models.evidence import Evidence
+from reasoning_rag.models.query import QueryAnalysis
+from reasoning_rag.models.retrieval import RetrievalPlan
 
 
 class TraceEvent(BaseModel):
@@ -21,6 +23,9 @@ class AskResult(BaseModel):
     question: Annotated[str, Field(min_length=1)]
     document_id: Annotated[str, Field(min_length=1, max_length=128)]
     retrieval_mode: RetrievalMode
+    query_analysis: QueryAnalysis | None = None
+    retrieval_plan: RetrievalPlan | None = None
+    analysis_fallback: bool = False
     evidence: list[Evidence] = Field(default_factory=list)
     answer: Answer
     events: list[TraceEvent] = Field(default_factory=list)

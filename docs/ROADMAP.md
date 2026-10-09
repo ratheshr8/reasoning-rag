@@ -21,11 +21,11 @@ Each skill is proven only when the artifact exists. Profile copy must not presen
 
 ## Now vs next
 
-**Now (Phase 4 / M3):** tree-first and lexical retrieval, evidence assembly, extractive cited answers, abstention, and `reasoning-rag ask`. See [ADR 0005](adr/0005-retrieval-baselines.md) and [`data/corpus/v0/cases.json`](../data/corpus/v0/cases.json).
+**Now (Phase 5 / M4):** typed query analysis, bounded retrieval plans, plan-guided ask, and `reasoning-rag plan`. See [ADR 0006](adr/0006-query-planning.md).
 
 **Next public proofs**
 
-1. **Phase 5 — Planned retrieval:** query analysis and bounded planner.
+1. **Phase 6 — Navigation and verification:** multi-hop evidence, conflict surfacing, claim mapping.
 2. **M5 — Measured system:** reproducible eval report with cost and latency.
 3. **M6 — Public beta:** tagged release, security notes, clean-clone quickstart.
 

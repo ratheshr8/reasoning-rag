@@ -15,6 +15,7 @@ from reasoning_rag.config import load_settings
 from reasoning_rag.ingestion import IngestionError, ingest_markdown_path
 from reasoning_rag.logging_setup import configure_logging, get_logger
 from reasoning_rag.models.common import AccessClassification, RetrievalMode
+from reasoning_rag.planning import analyze_query, build_retrieval_plan, render_plan_text
 from reasoning_rag.qa import ask_document
 from reasoning_rag.tree import TreeBuildError, build_document_tree, render_tree_text
 from reasoning_rag.tree.serialize import dump_tree_json, write_tree_json
@@ -246,6 +247,95 @@ def tree_cmd(
         typer.echo(render_tree_text(tree, include_summaries=show_summaries or summarize))
 
 
+@app.command("plan")
+def plan_cmd(
+    path: Annotated[
+        Path,
+        typer.Argument(exists=False, readable=False, help="Path to a Markdown (.md) file."),
+    ],
+    question: Annotated[
+        str,
+        typer.Option("--question", "-q", help="Question to analyze and plan for."),
+    ],
+    output: Annotated[
+        Path | None,
+        typer.Option("--output", "-o", help="Write analysis+plan JSON to this path."),
+    ] = None,
+    mode: Annotated[
+        RetrievalMode,
+        typer.Option("--mode", help="Retrieval mode for planning."),
+    ] = RetrievalMode.TREE_FIRST,
+    format: Annotated[
+        Literal["text", "json"],
+        typer.Option("--format", "-f", help="Stdout format when --output is omitted."),
+    ] = "text",
+    synthetic: Annotated[
+        bool,
+        typer.Option("--synthetic", help="Mark access_classification as synthetic."),
+    ] = False,
+) -> None:
+    """Analyze a question and show a bounded retrieval plan (no answer)."""
+    log = get_logger(__name__, component="cli")
+    try:
+        settings = load_settings()
+    except ValidationError as exc:
+        _print_validation_error(exc)
+        raise typer.Exit(code=2) from exc
+
+    classification = (
+        AccessClassification.SYNTHETIC if synthetic else AccessClassification.PUBLIC
+    )
+    try:
+        normalized = ingest_markdown_path(
+            path,
+            settings=settings,
+            access_classification=classification,
+        )
+        tree = build_document_tree(normalized, settings=settings, summarize=False)
+        analysis, used_fallback, analyzer_version = analyze_query(question)
+        plan = build_retrieval_plan(
+            analysis,
+            tree,
+            normalized,
+            settings=settings,
+            retrieval_mode=mode,
+        )
+    except IngestionError as exc:
+        err_console.print(f"[bold red]Ingestion failed[/bold red] ({exc.code}): {exc.message}")
+        raise typer.Exit(code=1) from exc
+    except (TreeBuildError, ValueError) as exc:
+        message = getattr(exc, "message", str(exc))
+        code = getattr(exc, "code", "plan_error")
+        err_console.print(f"[bold red]Plan failed[/bold red] ({code}): {message}")
+        raise typer.Exit(code=1) from exc
+
+    payload = {
+        "document_id": tree.document.id,
+        "analyzer_version": analyzer_version,
+        "analysis_fallback": used_fallback,
+        "query_analysis": analysis.model_dump(mode="json"),
+        "retrieval_plan": plan.model_dump(mode="json"),
+    }
+    text = json.dumps(payload, indent=2, ensure_ascii=True)
+    if output is not None:
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(text + "\n", encoding="utf-8")
+        typer.echo(f"wrote {output}")
+
+    log.info(
+        "plan_ok document_id=%s candidates=%s fallback=%s",
+        tree.document.id,
+        len(plan.candidate_node_ids),
+        used_fallback,
+    )
+    if format == "json" and output is None:
+        typer.echo(text)
+    else:
+        if used_fallback:
+            typer.echo("NOTE: analysis used safe fallback (malformed/unavailable structured output)")
+        typer.echo(render_plan_text(analysis, plan))
+
+
 @app.command("ask")
 def ask_cmd(
     path: Annotated[
@@ -264,6 +354,10 @@ def ask_cmd(
         RetrievalMode,
         typer.Option("--mode", help="Retrieval mode for this run."),
     ] = RetrievalMode.TREE_FIRST,
+    show_plan: Annotated[
+        bool,
+        typer.Option("--show-plan", help="Print query analysis and retrieval plan."),
+    ] = False,
     synthetic: Annotated[
         bool,
         typer.Option("--synthetic", help="Mark access_classification as synthetic."),
@@ -311,6 +405,12 @@ def ask_cmd(
         result.retrieval_mode.value,
     )
 
+    if show_plan and result.query_analysis and result.retrieval_plan:
+        if result.analysis_fallback:
+            typer.echo("NOTE: analysis used safe fallback")
+        typer.echo(render_plan_text(result.query_analysis, result.retrieval_plan))
+        typer.echo("---")
+
     if result.answer.abstained:
         typer.echo(f"ABSTAIN: {result.answer.abstention_reason}")
     else:
@@ -324,3 +424,4 @@ def ask_cmd(
 
 if __name__ == "__main__":
     app()
+

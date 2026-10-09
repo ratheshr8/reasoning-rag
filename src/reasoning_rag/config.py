@@ -42,6 +42,10 @@ class Settings(BaseSettings):
     retrieve_top_k: int = Field(default=3, ge=1, le=50)
     retrieve_min_score: float = Field(default=0.2, ge=0.0, le=10.0)
     evidence_max_chars: int = Field(default=1200, ge=64, le=20_000)
+    plan_max_depth: int = Field(default=6, ge=0, le=32)
+    plan_max_nodes: int = Field(default=3, ge=1, le=50)
+    plan_max_model_calls: int = Field(default=0, ge=0, le=32)
+    plan_max_context_tokens: int = Field(default=4000, ge=128, le=200_000)
 
     @field_validator("data_dir", "store_dir", mode="before")
     @classmethod
