@@ -19,10 +19,13 @@ def citations_resolve(evidence: list[Evidence], normalized: NormalizedDocument) 
         slice_text = text[start:end]
         # exact_text may be truncated with ellipsis for CLI budgets
         core = item.exact_text.removesuffix("…")
-        if core and core not in slice_text and not slice_text.startswith(core.rstrip()):
-            # Allow whitespace-normalized containment of the leading portion.
-            if core.strip() not in slice_text and not slice_text.strip().startswith(
-                core.strip()[:80]
-            ):
-                unresolved.append(item.id)
+        # Allow whitespace-normalized containment of the leading portion.
+        if (
+            core
+            and core not in slice_text
+            and not slice_text.startswith(core.rstrip())
+            and core.strip() not in slice_text
+            and not slice_text.strip().startswith(core.strip()[:80])
+        ):
+            unresolved.append(item.id)
     return unresolved

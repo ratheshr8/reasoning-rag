@@ -10,7 +10,7 @@ Requires Python 3.12+.
 python -m venv .venv
 # Windows: .venv\Scripts\activate
 # Unix: source .venv/bin/activate
-pip install -e ".[dev]"
+pip install -e ".[dev,demo]"
 cp .env.example .env
 ```
 
@@ -22,6 +22,8 @@ ruff format --check src tests
 mypy
 pytest
 ```
+
+Demo API tests require the `demo` extra (FastAPI). Start the UI with `reasoning-rag serve` (do not commit secrets).
 
 Do not commit secrets, employer/customer documents, or unverified benchmark claims.
 

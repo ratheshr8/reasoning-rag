@@ -12,9 +12,9 @@ from rich.console import Console
 
 from reasoning_rag import __version__
 from reasoning_rag.config import load_settings
+from reasoning_rag.evaluation.runner import parse_modes, run_evaluation
 from reasoning_rag.ingestion import IngestionError, ingest_markdown_path
 from reasoning_rag.logging_setup import configure_logging, get_logger
-from reasoning_rag.evaluation.runner import parse_modes, run_evaluation
 from reasoning_rag.models.common import AccessClassification, RetrievalMode
 from reasoning_rag.planning import analyze_query, build_retrieval_plan, render_plan_text
 from reasoning_rag.qa import ask_document
@@ -125,9 +125,7 @@ def ingest_cmd(
         _print_validation_error(exc)
         raise typer.Exit(code=2) from exc
 
-    classification = (
-        AccessClassification.SYNTHETIC if synthetic else AccessClassification.PUBLIC
-    )
+    classification = AccessClassification.SYNTHETIC if synthetic else AccessClassification.PUBLIC
     try:
         result = ingest_markdown_path(
             path,
@@ -203,9 +201,7 @@ def tree_cmd(
         _print_validation_error(exc)
         raise typer.Exit(code=2) from exc
 
-    classification = (
-        AccessClassification.SYNTHETIC if synthetic else AccessClassification.PUBLIC
-    )
+    classification = AccessClassification.SYNTHETIC if synthetic else AccessClassification.PUBLIC
     try:
         normalized = ingest_markdown_path(
             path,
@@ -283,9 +279,7 @@ def plan_cmd(
         _print_validation_error(exc)
         raise typer.Exit(code=2) from exc
 
-    classification = (
-        AccessClassification.SYNTHETIC if synthetic else AccessClassification.PUBLIC
-    )
+    classification = AccessClassification.SYNTHETIC if synthetic else AccessClassification.PUBLIC
     try:
         normalized = ingest_markdown_path(
             path,
@@ -333,7 +327,9 @@ def plan_cmd(
         typer.echo(text)
     else:
         if used_fallback:
-            typer.echo("NOTE: analysis used safe fallback (malformed/unavailable structured output)")
+            typer.echo(
+                "NOTE: analysis used safe fallback (malformed/unavailable structured output)"
+            )
         typer.echo(render_plan_text(analysis, plan))
 
 
@@ -372,9 +368,7 @@ def ask_cmd(
         _print_validation_error(exc)
         raise typer.Exit(code=2) from exc
 
-    classification = (
-        AccessClassification.SYNTHETIC if synthetic else AccessClassification.PUBLIC
-    )
+    classification = AccessClassification.SYNTHETIC if synthetic else AccessClassification.PUBLIC
     try:
         result = ask_document(
             path,
@@ -499,6 +493,39 @@ def eval_cmd(
             )
 
 
+@app.command("serve")
+def serve_cmd(
+    host: Annotated[str, typer.Option("--host", help="Bind host.")] = "127.0.0.1",
+    port: Annotated[int, typer.Option("--port", help="Bind port.")] = 8000,
+) -> None:
+    """Start the local demo UI and validated API (requires: pip install -e '.[demo]')."""
+    try:
+        import uvicorn
+    except ImportError as exc:
+        err_console.print(
+            '[bold red]Demo dependencies missing[/bold red]. Install with: pip install -e ".[demo]"'
+        )
+        raise typer.Exit(code=1) from exc
+
+    try:
+        settings = load_settings()
+    except ValidationError as exc:
+        _print_validation_error(exc)
+        raise typer.Exit(code=2) from exc
+
+    from reasoning_rag.api import create_app
+    from reasoning_rag.api.service import provider_notice
+
+    notice = provider_notice(settings)
+    typer.echo(f"provider: {notice.model_provider} / {notice.model_name}")
+    typer.echo(notice.message)
+    typer.echo(f"max_upload_bytes={settings.max_upload_bytes}")
+    typer.echo(f"demo: http://{host}:{port}/")
+    typer.echo(f"api docs: http://{host}:{port}/docs")
+
+    api = create_app(settings=settings, repo_root=Path.cwd())
+    uvicorn.run(api, host=host, port=port, log_level="info")
+
+
 if __name__ == "__main__":
     app()
-

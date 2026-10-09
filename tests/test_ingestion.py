@@ -5,7 +5,11 @@ from pathlib import Path
 import pytest
 
 from reasoning_rag.config import Settings
-from reasoning_rag.ingestion import UnsupportedMediaTypeError, ValidationFailedError, ingest_markdown_path
+from reasoning_rag.ingestion import (
+    UnsupportedMediaTypeError,
+    ValidationFailedError,
+    ingest_markdown_path,
+)
 from reasoning_rag.models.common import AccessClassification
 
 CORPUS = Path(__file__).resolve().parents[1] / "data" / "corpus" / "v0" / "acme-widget-spec.md"
@@ -45,8 +49,9 @@ def test_rejects_unsupported_extension(tmp_path: Path) -> None:
 
 def test_rejects_oversized_file(tmp_path: Path) -> None:
     path = tmp_path / "big.md"
-    path.write_text("# Title\n\nbody\n", encoding="utf-8")
-    settings = Settings(max_upload_bytes=8)
+    path.write_text("# Title\n\n" + ("body\n" * 400), encoding="utf-8")
+    settings = Settings(max_upload_bytes=1024)
+    assert path.stat().st_size > settings.max_upload_bytes
     with pytest.raises(ValidationFailedError) as exc:
         ingest_markdown_path(path, settings=settings)
     assert exc.value.code == "file_too_large"

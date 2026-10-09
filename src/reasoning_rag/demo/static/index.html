@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>reasoning-rag demo</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="hero">
+        <p class="brand">reasoning-rag</p>
+        <h1>Local document Q&amp;A demo</h1>
+        <p class="lede">
+          Ask questions against a sample Markdown spec. Answers include citations and a retrieval
+          trace summary. This is a prototype, not a production service.
+        </p>
+      </header>
+
+      <section class="notice" id="provider-notice" aria-live="polite"></section>
+
+      <section class="panel">
+        <h2>Ask</h2>
+        <form id="ask-form">
+          <label>
+            Document
+            <select id="sample-id" name="sample_id" required></select>
+          </label>
+          <label>
+            Or upload Markdown
+            <input id="upload" name="file" type="file" accept=".md,.markdown,text/markdown" />
+          </label>
+          <p class="hint" id="upload-limits"></p>
+          <label>
+            Question
+            <textarea id="question" name="question" rows="3" required maxlength="4000"
+              placeholder="What supply voltage does the Acme Widget require?"></textarea>
+          </label>
+          <label>
+            Retrieval mode
+            <select id="mode" name="retrieval_mode">
+              <option value="tree-first" selected>tree-first</option>
+              <option value="tree-lexical">tree-lexical</option>
+            </select>
+          </label>
+          <button type="submit">Ask</button>
+        </form>
+        <p class="error" id="error" hidden></p>
+      </section>
+
+      <section class="panel" id="result-panel" hidden>
+        <h2>Answer</h2>
+        <p id="answer-text" class="answer"></p>
+        <div id="citations"></div>
+        <div id="conflicts"></div>
+        <h3>Trace summary</h3>
+        <pre id="trace-summary"></pre>
+        <details>
+          <summary>Full JSON response</summary>
+          <pre id="raw-json"></pre>
+        </details>
+      </section>
+    </main>
+    <script src="/static/app.js"></script>
+  </body>
+</html>

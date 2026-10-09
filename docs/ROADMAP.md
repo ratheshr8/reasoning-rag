@@ -21,12 +21,11 @@ Each skill is proven only when the artifact exists. Profile copy must not presen
 
 ## Now vs next
 
-**Now (Phase 7 / M5):** versioned `eval-v0` dataset, tree-first/lexical baselines, reproducible `reasoning-rag eval` reports with latency/cost and per-case failures. See [EVALUATION.md](EVALUATION.md) and [ADR 0008](adr/0008-evaluation-protocol.md).
+**Now (Phase 8):** local demo UI and validated API (`reasoning-rag serve`), with upload limits and provider notices. See [ADR 0009](adr/0009-demo-and-api.md).
 
 **Next public proofs**
 
-1. **Phase 8 — Usable demo:** local demo and optional small API boundary.
-2. **Phase 9 / M6 — Public beta:** hardening, tagged release, security notes.
+1. **Phase 9 / M6 — Public beta:** threat-model review, hardening, tagged release, security notes.
 
 Supporting GitHub repositories (governance, agentic SDLC, healthcare, harness, control plane) stay backlog until **M5** and are never pinned empty.
 

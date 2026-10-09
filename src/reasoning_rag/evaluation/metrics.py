@@ -10,9 +10,7 @@ from reasoning_rag.models.evaluation import EvaluationCase
 from reasoning_rag.models.trace import AskResult
 
 METRIC_DEFINITIONS: dict[str, str] = {
-    "abstention_accuracy": (
-        "Fraction of cases where answer.abstained matches expect_abstain."
-    ),
+    "abstention_accuracy": ("Fraction of cases where answer.abstained matches expect_abstain."),
     "answerable_success_rate": (
         "Among answerable cases, fraction that did not abstain and matched must_contain_any."
     ),
@@ -26,9 +24,7 @@ METRIC_DEFINITIONS: dict[str, str] = {
     "conflict_detection_rate": (
         "Among expect_conflict cases, fraction with non-empty verification.conflicts."
     ),
-    "unsupported_claim_rate": (
-        "Fraction of non-abstaining answers with zero claim_links."
-    ),
+    "unsupported_claim_rate": ("Fraction of non-abstaining answers with zero claim_links."),
     "latency_ms_median": "Median wall-clock ask latency in milliseconds.",
     "latency_ms_p95": "95th percentile wall-clock ask latency in milliseconds.",
     "estimated_cost_usd": "Estimated model cost in USD (0.0 for fixture provider).",
@@ -55,12 +51,9 @@ def score_case(
     section_hit = None
     if case.expected_evidence_sections:
         blob = " ".join(
-            f"{item.source_range.section_path or ''} {item.exact_text}"
-            for item in result.evidence
+            f"{item.source_range.section_path or ''} {item.exact_text}" for item in result.evidence
         ).lower()
-        section_hit = any(
-            section.lower() in blob for section in case.expected_evidence_sections
-        )
+        section_hit = any(section.lower() in blob for section in case.expected_evidence_sections)
 
     expect_conflict = bool(props.get("expect_conflict", False))
     conflict_ok = None
@@ -68,21 +61,15 @@ def score_case(
         conflicts = result.verification.conflicts if result.verification else []
         conflict_ok = len(conflicts) > 0
 
-    unresolved = (
-        list(result.verification.unresolved_citation_ids) if result.verification else []
-    )
+    unresolved = list(result.verification.unresolved_citation_ids) if result.verification else []
     evidence_count = len(result.evidence)
     citation_ok_rate = (
         1.0
         if evidence_count == 0 and want_abstain
-        else (
-            (evidence_count - len(unresolved)) / evidence_count if evidence_count else 0.0
-        )
+        else ((evidence_count - len(unresolved)) / evidence_count if evidence_count else 0.0)
     )
 
-    unsupported_claims = (
-        (not result.answer.abstained) and len(result.answer.claim_links) == 0
-    )
+    unsupported_claims = (not result.answer.abstained) and len(result.answer.claim_links) == 0
 
     failures: list[str] = []
     if not abstain_ok:
@@ -128,9 +115,7 @@ def aggregate_metrics(case_rows: list[dict[str, Any]]) -> dict[str, Any]:
     def _mean(values: list[float]) -> float:
         return sum(values) / len(values) if values else 0.0
 
-    abstention_accuracy = _mean(
-        [1.0 if row["abstention_correct"] else 0.0 for row in case_rows]
-    )
+    abstention_accuracy = _mean([1.0 if row["abstention_correct"] else 0.0 for row in case_rows])
 
     answerable_rows = [row for row in case_rows if row["answerable"]]
     answerable_success_rate = _mean(
@@ -143,18 +128,12 @@ def aggregate_metrics(case_rows: list[dict[str, Any]]) -> dict[str, Any]:
     )
 
     section_rows = [row for row in case_rows if row["section_hit"] is not None]
-    section_hit_rate = _mean(
-        [1.0 if row["section_hit"] else 0.0 for row in section_rows]
-    )
+    section_hit_rate = _mean([1.0 if row["section_hit"] else 0.0 for row in section_rows])
 
-    citation_resolution_rate = _mean(
-        [float(row["citation_resolution_rate"]) for row in case_rows]
-    )
+    citation_resolution_rate = _mean([float(row["citation_resolution_rate"]) for row in case_rows])
 
     conflict_rows = [row for row in case_rows if row["expect_conflict"]]
-    conflict_detection_rate = _mean(
-        [1.0 if row["conflict_ok"] else 0.0 for row in conflict_rows]
-    )
+    conflict_detection_rate = _mean([1.0 if row["conflict_ok"] else 0.0 for row in conflict_rows])
 
     non_abstain = [row for row in case_rows if not row["abstained"]]
     unsupported_claim_rate = _mean(

@@ -50,7 +50,9 @@ def normalize_text(raw_text: str) -> tuple[str, list[ParserWarning]]:
     return text, warnings
 
 
-def parse_markdown_sections(text: str, *, document_id: str) -> tuple[list[NormalizedSection], list[ParserWarning]]:
+def parse_markdown_sections(
+    text: str, *, document_id: str
+) -> tuple[list[NormalizedSection], list[ParserWarning]]:
     """Split Markdown into heading sections with provenance ranges."""
     warnings: list[ParserWarning] = []
     if text == "":
@@ -179,10 +181,7 @@ def _collect_raw_sections(text: str, warnings: list[ParserWarning]) -> list[_Raw
         else:
             body_start = heading_end
 
-        if i + 1 < len(heading_indices):
-            end = heading_indices[i + 1][3]
-        else:
-            end = len(text)
+        end = heading_indices[i + 1][3] if i + 1 < len(heading_indices) else len(text)
 
         sections.append(
             _RawSection(

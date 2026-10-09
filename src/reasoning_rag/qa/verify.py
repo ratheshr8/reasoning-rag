@@ -56,22 +56,27 @@ def detect_conflicts(evidence: list[Evidence]) -> list[EvidenceConflict]:
                     values.setdefault(key, []).append(item.id)
 
         distinct = sorted(values.keys(), key=_value_sort_key)
-        if len(distinct) >= 2:
-            evidence_ids: list[str] = []
-            for key in distinct:
-                evidence_ids.extend(values[key])
-            ordered_ids = _unique(evidence_ids)
-            conflicts.append(
-                EvidenceConflict(
-                    topic=topic,
-                    values=distinct,
-                    evidence_ids=ordered_ids,
-                    note=(
-                        f"conflicting values for {topic}: {', '.join(distinct)}; "
-                        "surfaced rather than merged"
-                    ),
-                )
+        if len(distinct) < 2:
+            continue
+        evidence_ids: list[str] = []
+        for key in distinct:
+            evidence_ids.extend(values[key])
+        ordered_ids = _unique(evidence_ids)
+        # Same snippet can list related numbers (e.g. max vs peak current);
+        # only surface conflicts backed by at least two evidence items.
+        if len(ordered_ids) < 2:
+            continue
+        conflicts.append(
+            EvidenceConflict(
+                topic=topic,
+                values=distinct,
+                evidence_ids=ordered_ids,
+                note=(
+                    f"conflicting values for {topic}: {', '.join(distinct)}; "
+                    "surfaced rather than merged"
+                ),
             )
+        )
     return conflicts
 
 

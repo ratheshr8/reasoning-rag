@@ -10,7 +10,7 @@ from typing import Any
 
 from reasoning_rag import __version__
 from reasoning_rag.config import Settings
-from reasoning_rag.evaluation.dataset import EvalDataset, load_eval_dataset
+from reasoning_rag.evaluation.dataset import load_eval_dataset
 from reasoning_rag.evaluation.metrics import METRIC_DEFINITIONS, aggregate_metrics, score_case
 from reasoning_rag.evaluation.report import write_report
 from reasoning_rag.models.common import AccessClassification, RetrievalMode
@@ -109,7 +109,10 @@ def run_evaluation(
         "modes": mode_reports,
         "notes": [
             "Fixture model provider: estimated_cost_usd is 0.0.",
-            "Do not claim superiority over vector RAG unless a vector baseline ran under equal protocol.",
+            (
+                "Do not claim superiority over vector RAG unless a vector "
+                "baseline ran under equal protocol."
+            ),
             VECTOR_BASELINE_STATUS,
         ],
     }

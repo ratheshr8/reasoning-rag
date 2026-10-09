@@ -18,8 +18,7 @@ class QueryAnalyzer(Protocol):
 
     version: str
 
-    def analyze_raw(self, question: str) -> QueryAnalysis | dict[str, Any]:
-        ...
+    def analyze_raw(self, question: str) -> QueryAnalysis | dict[str, Any]: ...
 
 
 class FixtureQueryAnalyzer:
@@ -98,10 +97,10 @@ def _detect_intent(lower: str) -> str:
         return "comparison"
     if lower.startswith("why ") or " why " in lower:
         return "explanatory"
-    if any(
-        lower.startswith(prefix)
-        for prefix in ("how do", "how can", "how to", "how should")
-    ) or "procedure" in lower:
+    if (
+        any(lower.startswith(prefix) for prefix in ("how do", "how can", "how to", "how should"))
+        or "procedure" in lower
+    ):
         return "procedural"
     return "lookup"
 
@@ -141,9 +140,7 @@ def _extract_constraints(lower: str) -> list[str]:
 
 
 def _decompose_subquestions(normalized: str, lower: str) -> list[str]:
-    if " and " in lower and any(
-        cue in lower for cue in ("what is", "what are", "how", "compare")
-    ):
+    if " and " in lower and any(cue in lower for cue in ("what is", "what are", "how", "compare")):
         parts = re.split(r"\band\b", normalized, maxsplit=1, flags=re.IGNORECASE)
         cleaned = [" ".join(part.strip(" ?").split()) for part in parts if part.strip()]
         if len(cleaned) == 2 and all(len(part) > 8 for part in cleaned):

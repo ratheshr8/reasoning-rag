@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from reasoning_rag.models.node import Node
 from reasoning_rag.models.normalized import NormalizedDocument
 from reasoning_rag.models.tree import DocumentTree
 from reasoning_rag.retrieval.tokenize import query_terms, tokenize
@@ -20,9 +19,7 @@ def score_nodes_lexical(
     if not terms:
         return []
 
-    section_text = {
-        section.id: section.text for section in normalized.sections
-    }
+    section_text = {section.id: section.text for section in normalized.sections}
     scored: list[tuple[str, float, str]] = []
     for node_id, node in tree.nodes.items():
         if node.metadata.get("kind") == "document_root":

@@ -37,14 +37,19 @@ def build_answer_from_evidence(
             claim_links=[],
             limitations=["document states the requested information is elsewhere/absent"],
             abstained=True,
-            abstention_reason=(
-                "the corpus indicates the answer is not present in this document"
-            ),
+            abstention_reason=("the corpus indicates the answer is not present in this document"),
             trace_id=tid,
         )
 
+    terms = query_terms(question)
+    ranked = sorted(
+        evidence,
+        key=lambda item: _term_overlap(item.exact_text, terms),
+        reverse=True,
+    )
+
     claim_links: list[ClaimEvidenceLink] = []
-    for item in evidence[:3]:
+    for item in ranked[:3]:
         claim = _first_sentence(item.exact_text) or item.exact_text[:240]
         if not claim.strip():
             continue
@@ -60,9 +65,8 @@ def build_answer_from_evidence(
             trace_id=tid,
         )
 
-    # Primary answer text from the top claim; additional claims remain linked.
+    # Primary answer text from the claim with strongest question-term overlap.
     text = claim_links[0].claim
-    _ = query_terms(question)  # retained for future claim ranking hooks
 
     return Answer(
         text=text,
@@ -76,6 +80,11 @@ def build_answer_from_evidence(
     )
 
 
+def _term_overlap(text: str, terms: list[str]) -> int:
+    blob = text.lower()
+    return sum(1 for term in terms if term.lower() in blob)
+
+
 def _first_sentence(text: str) -> str:
     cleaned = re.sub(r"^#{1,6}\s+.*$", "", text, flags=re.MULTILINE).strip()
     cleaned = re.sub(r"\s+", " ", cleaned)
@@ -87,9 +96,13 @@ def _first_sentence(text: str) -> str:
 
 def _looks_unanswerable(question: str, evidence: list[Evidence]) -> bool:
     q = question.lower()
-    if "firmware" not in q and "update procedure" not in q and "how do i update" not in q:
-        if not any(word in q for word in ("how", "where", "procedure", "steps")):
-            return False
+    if (
+        "firmware" not in q
+        and "update procedure" not in q
+        and "how do i update" not in q
+        and not any(word in q for word in ("how", "where", "procedure", "steps"))
+    ):
+        return False
     absence_markers = (
         "intentionally absent",
         "separate document",

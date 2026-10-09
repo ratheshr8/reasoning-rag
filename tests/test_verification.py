@@ -4,12 +4,11 @@ from pathlib import Path
 
 from reasoning_rag.config import Settings
 from reasoning_rag.ingestion import ingest_markdown_path
+from reasoning_rag.models.answer import Answer, ClaimEvidenceLink
 from reasoning_rag.models.common import AccessClassification, RetrievalMode, SourceRange
 from reasoning_rag.models.evidence import Evidence
-from reasoning_rag.models.normalized import NormalizedDocument
 from reasoning_rag.qa import ask_document
 from reasoning_rag.qa.verify import detect_conflicts, map_and_verify_claims, verify_evidence
-from reasoning_rag.models.answer import Answer, ClaimEvidenceLink
 
 CORPUS = Path(__file__).resolve().parents[1] / "data" / "corpus" / "v0" / "acme-widget-spec.md"
 
@@ -48,7 +47,9 @@ def test_detect_conflicts_on_synthetic_snippets() -> None:
             id="ev.b",
             document_id="doc.1",
             node_id="n2",
-            exact_text="Earlier drafts claimed a maximum ambient temperature of 45 degrees Celsius.",
+            exact_text=(
+                "Earlier drafts claimed a maximum ambient temperature of 45 degrees Celsius."
+            ),
             source_range=SourceRange(start_offset=10, end_offset=20),
             provenance="test",
         ),
@@ -104,6 +105,9 @@ def test_ask_maps_claims_to_evidence() -> None:
     assert result.answer.claim_links
     for link in result.answer.claim_links:
         assert link.evidence_ids
-        assert all(any(item.id == evidence_id for item in result.evidence) for evidence_id in link.evidence_ids)
+        assert all(
+            any(item.id == evidence_id for item in result.evidence)
+            for evidence_id in link.evidence_ids
+        )
     assert result.verification is not None
     assert result.verification.coverage

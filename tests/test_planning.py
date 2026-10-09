@@ -61,7 +61,9 @@ def test_plan_respects_node_budget() -> None:
     assert plan.budgets.max_nodes == 2
     assert len(plan.candidate_node_ids) <= 2
     assert plan.steps[-1].action == "stop"
-    assert all(tree.nodes[node_id].level <= plan.budgets.max_depth for node_id in plan.candidate_node_ids)
+    assert all(
+        tree.nodes[node_id].level <= plan.budgets.max_depth for node_id in plan.candidate_node_ids
+    )
 
 
 def test_ask_includes_plan_and_analysis() -> None:

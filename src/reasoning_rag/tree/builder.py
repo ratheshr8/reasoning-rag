@@ -90,10 +90,7 @@ def build_document_tree(
             },
         )
 
-        if (
-            active_summarizer is not None
-            and summaries_made < settings.tree_max_summaries
-        ):
+        if active_summarizer is not None and summaries_made < settings.tree_max_summaries:
             node.summary = active_summarizer.summarize(
                 title=section.title,
                 text=section.text,

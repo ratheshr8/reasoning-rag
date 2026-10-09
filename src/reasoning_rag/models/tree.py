@@ -1,6 +1,8 @@
 """Document knowledge-tree contract."""
 
-from typing import Annotated
+from __future__ import annotations
+
+from typing import Annotated, Self
 
 from pydantic import BaseModel, Field, model_validator
 
@@ -22,7 +24,7 @@ class DocumentTree(BaseModel):
     prompt_version: str | None = None
 
     @model_validator(mode="after")
-    def validate_tree_integrity(self) -> DocumentTree:
+    def validate_tree_integrity(self) -> Self:
         if self.root_id not in self.nodes:
             raise ValueError(f"root_id '{self.root_id}' missing from nodes")
         for node_id, node in self.nodes.items():

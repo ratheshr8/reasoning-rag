@@ -1,0 +1,151 @@
+:root {
+  --bg: #f3efe6;
+  --ink: #1c2430;
+  --muted: #5b6573;
+  --accent: #0f6a5b;
+  --panel: #fffdf8;
+  --line: #d7d0c2;
+  --danger: #8b2e2e;
+  --warn-bg: #fff4d6;
+  --warn-ink: #5c4300;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at top left, #e7f2ee 0%, transparent 40%),
+    linear-gradient(180deg, #f7f3ea 0%, var(--bg) 100%);
+  min-height: 100vh;
+}
+
+.page {
+  width: min(860px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 2.5rem 0 4rem;
+}
+
+.brand {
+  text-transform: lowercase;
+  letter-spacing: 0.04em;
+  font-weight: 700;
+  color: var(--accent);
+  margin: 0 0 0.5rem;
+}
+
+h1,
+h2,
+h3 {
+  font-family: "IBM Plex Serif", Georgia, serif;
+  line-height: 1.2;
+  margin: 0 0 0.75rem;
+}
+
+.lede,
+.hint,
+label {
+  color: var(--muted);
+}
+
+.lede {
+  max-width: 40rem;
+  font-size: 1.05rem;
+}
+
+.notice,
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 1.25rem 1.4rem;
+  margin-top: 1.25rem;
+}
+
+.notice {
+  background: var(--warn-bg);
+  color: var(--warn-ink);
+}
+
+form {
+  display: grid;
+  gap: 1rem;
+}
+
+label {
+  display: grid;
+  gap: 0.4rem;
+  font-size: 0.95rem;
+}
+
+input,
+select,
+textarea,
+button {
+  font: inherit;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.7rem 0.8rem;
+  background: #fff;
+  color: var(--ink);
+}
+
+button {
+  justify-self: start;
+  border: 0;
+  border-radius: 999px;
+  padding: 0.75rem 1.3rem;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.answer {
+  font-size: 1.15rem;
+  line-height: 1.5;
+}
+
+.error {
+  color: var(--danger);
+}
+
+.cite,
+.conflict {
+  margin-top: 0.5rem;
+  padding: 0.6rem 0.8rem;
+  border-left: 3px solid var(--accent);
+  background: #f4faf8;
+}
+
+.conflict {
+  border-left-color: #b7791f;
+  background: #fff8e8;
+}
+
+pre {
+  overflow: auto;
+  background: #1c2430;
+  color: #e8eef5;
+  padding: 1rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+}
+
+details {
+  margin-top: 1rem;
+}

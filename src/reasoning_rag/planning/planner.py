@@ -60,9 +60,7 @@ def build_retrieval_plan(
 
     top_k = max(budgets.max_nodes, 1)
     if retrieval_mode == RetrievalMode.TREE_LEXICAL:
-        scored = score_nodes_lexical(
-            analysis.normalized_query, tree, normalized, top_k=top_k * 2
-        )
+        scored = score_nodes_lexical(analysis.normalized_query, tree, normalized, top_k=top_k * 2)
         score_action = "score_lexical"
     else:
         scored = select_nodes_tree_first(
