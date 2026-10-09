@@ -1,6 +1,6 @@
 # Product brief — reasoning-rag
 
-**Status:** prototype (Phase 1 skeleton)  
+**Status:** prototype (Phase 2 — Markdown ingestion)  
 **Owner:** Rathesh R (`ratheshr8`)  
 **Audience:** hiring managers, AI engineers, and peers evaluating architecture judgment
 
@@ -35,11 +35,9 @@ It is not a hosted enterprise product and not a substitute for professional, leg
 | Choice | Decision |
 | --- | --- |
 | Format | Markdown only |
-| Corpus | Small in-repo set: one public, redistributable technical specification (Markdown) plus synthetic fixtures for unanswerable and conflicting-evidence questions |
-| License bar | Samples must be legal to redistribute; record source and license in a dataset card before they land in `data/` |
+| Corpus | `data/corpus/v0/acme-widget-spec.md` (synthetic technical spec) with unanswerable and conflicting-evidence content |
+| License bar | CC0-1.0; see [`data/corpus/v0/DATASET_CARD.md`](../data/corpus/v0/DATASET_CARD.md) |
 | Out of scope | Private employer/customer files; unlabeled Healthcare/FinTech production claims |
-
-The exact spec file is added in Phase 2 with a dataset card. Until then this brief is the lock: Markdown, public/synthetic only, one document family with predictable headings.
 
 ## Success measures
 

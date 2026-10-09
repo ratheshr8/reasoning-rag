@@ -21,11 +21,11 @@ Each skill is proven only when the artifact exists. Profile copy must not presen
 
 ## Now vs next
 
-**Now (Phase 1):** installable package, typed contracts, config validation, CLI skeleton (`version` / `config` / `doctor`), Ruff/mypy/pytest CI. See [ADR 0002](adr/0002-language-and-tooling.md).
+**Now (Phase 2):** Markdown ingest with checksums, section offsets, warnings, and `reasoning-rag ingest`. Sample corpus: [`data/corpus/v0/`](../data/corpus/v0/). See [ADR 0003](adr/0003-ingestion-and-provenance.md).
 
 **Next public proofs**
 
-1. **Phase 2 / M2 — Inspectable tree:** Markdown ingest, provenance, source-aware tree, visualization.
+1. **Phase 3 / M2 — Inspectable tree:** heading-based knowledge tree, stable node IDs, serialization/visualization.
 2. **M3 — Grounded baseline:** cited answer plus abstention on a known unanswerable question.
 3. **M5 — Measured system:** reproducible eval report with cost and latency.
 4. **M6 — Public beta:** tagged release, security notes, clean-clone quickstart.

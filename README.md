@@ -1,6 +1,6 @@
 # reasoning-rag
 
-**Status:** prototype (Phase 1 — package skeleton and typed contracts; no retrieval runtime yet)
+**Status:** prototype (Phase 2 — Markdown ingestion with provenance; no retrieval/answer path yet)
 
 Hierarchy-aware document question answering: navigate a document tree, gather evidence, cite sources, and abstain when evidence is weak.
 
@@ -8,14 +8,16 @@ This is an independent project. It may study public ideas such as hierarchical d
 
 ## What works now
 
-- Product brief, public roadmap, and scope ADRs
-- Installable Python 3.12+ package with typed domain models
-- Validated configuration (`REASONING_RAG_*`), structured logging, CLI skeleton
+- Product brief, public roadmap, and ADRs
+- Installable Python 3.12+ package with typed domain models and validated config
+- Markdown ingestion with checksums, section offsets, parser warnings, and size/type checks
+- Synthetic sample corpus under `data/corpus/v0/`
+- CLI: `version`, `config`, `doctor`, `ingest`
 - Lint, format, type-check, and CI workflow
 
 ## What is not implemented yet
 
-- Document ingestion, tree construction, retrieval, answering, evaluation harness, and demo
+- Knowledge tree construction, retrieval, answering, evaluation harness, and demo
 
 ## Retrieval mode
 
@@ -33,10 +35,11 @@ pip install -e ".[dev]"
 cp .env.example .env
 
 reasoning-rag --help
-reasoning-rag version
-reasoning-rag config
 reasoning-rag doctor
+reasoning-rag ingest data/corpus/v0/acme-widget-spec.md --synthetic
 ```
+
+`ingest` prints normalized JSON: document metadata, full text, sections with `source_range` offsets, and warnings. Unsupported types and oversized files fail with a clear error.
 
 Read:
 
@@ -44,16 +47,19 @@ Read:
 2. [Public roadmap](docs/ROADMAP.md)
 3. [ADR 0001 — project scope](docs/adr/0001-project-scope.md)
 4. [ADR 0002 — language and tooling](docs/adr/0002-language-and-tooling.md)
+5. [ADR 0003 — ingestion and provenance](docs/adr/0003-ingestion-and-provenance.md)
+6. [Corpus v0 dataset card](data/corpus/v0/DATASET_CARD.md)
 
 ## Skills this repo is meant to demonstrate
 
-See the [skills map](docs/ROADMAP.md#skills-this-repository-demonstrates). Spec/harness foundations (schemas, config validation, CI) are present; retrieval and evaluation proofs remain planned until M2+.
+See the [skills map](docs/ROADMAP.md#skills-this-repository-demonstrates). Spec/harness foundations and Markdown provenance are present; tree visualization and cited answers remain planned until M2/M3 tree+answer slices land.
 
 ## Limitations
 
-- Prototype skeleton only — not a production service
+- Markdown only; no PDF
+- Prototype — not a production service
 - No production deployment, no regulated-data handling, no professional-advice use
-- Public samples will be synthetic or redistributable documents only
+- Sample corpus is synthetic / CC0-1.0
 
 ## License
 
