@@ -19,12 +19,14 @@ from reasoning_rag.models.normalized import (
 )
 from reasoning_rag.models.query import QueryAnalysis
 from reasoning_rag.models.retrieval import RetrievalBudgets, RetrievalPlan, RetrievalStep
+from reasoning_rag.models.tree import DocumentTree
 
 __all__ = [
     "AccessClassification",
     "Answer",
     "ClaimEvidenceLink",
     "Document",
+    "DocumentTree",
     "EvaluationCase",
     "Evidence",
     "Node",

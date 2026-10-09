@@ -1,6 +1,6 @@
 # Product brief — reasoning-rag
 
-**Status:** prototype (Phase 2 — Markdown ingestion)  
+**Status:** prototype (Phase 3 — knowledge tree)  
 **Owner:** Rathesh R (`ratheshr8`)  
 **Audience:** hiring managers, AI engineers, and peers evaluating architecture judgment
 

@@ -1,6 +1,6 @@
 # reasoning-rag
 
-**Status:** prototype (Phase 2 — Markdown ingestion with provenance; no retrieval/answer path yet)
+**Status:** prototype (Phase 3 — inspectable knowledge tree; no retrieval/answer path yet)
 
 Hierarchy-aware document question answering: navigate a document tree, gather evidence, cite sources, and abstain when evidence is weak.
 
@@ -10,14 +10,16 @@ This is an independent project. It may study public ideas such as hierarchical d
 
 - Product brief, public roadmap, and ADRs
 - Installable Python 3.12+ package with typed domain models and validated config
-- Markdown ingestion with checksums, section offsets, parser warnings, and size/type checks
+- Markdown ingestion with checksums, section offsets, and parser warnings
+- Deterministic heading-based knowledge tree with JSON round-trip and text visualization
+- Optional fixture extractive summaries (records provider/model/prompt version)
 - Synthetic sample corpus under `data/corpus/v0/`
-- CLI: `version`, `config`, `doctor`, `ingest`
+- CLI: `version`, `config`, `doctor`, `ingest`, `tree`
 - Lint, format, type-check, and CI workflow
 
 ## What is not implemented yet
 
-- Knowledge tree construction, retrieval, answering, evaluation harness, and demo
+- Retrieval planning, answering with citations, evaluation harness, and demo UI
 
 ## Retrieval mode
 
@@ -34,12 +36,13 @@ python -m venv .venv
 pip install -e ".[dev]"
 cp .env.example .env
 
-reasoning-rag --help
 reasoning-rag doctor
 reasoning-rag ingest data/corpus/v0/acme-widget-spec.md --synthetic
+reasoning-rag tree data/corpus/v0/acme-widget-spec.md --synthetic
+reasoning-rag tree data/corpus/v0/acme-widget-spec.md --synthetic --summarize --format json
 ```
 
-`ingest` prints normalized JSON: document metadata, full text, sections with `source_range` offsets, and warnings. Unsupported types and oversized files fail with a clear error.
+`tree` prints an ASCII outline by default. Use `--format json` or `-o tree.json` for a round-trippable `DocumentTree`.
 
 Read:
 
@@ -48,17 +51,18 @@ Read:
 3. [ADR 0001 — project scope](docs/adr/0001-project-scope.md)
 4. [ADR 0002 — language and tooling](docs/adr/0002-language-and-tooling.md)
 5. [ADR 0003 — ingestion and provenance](docs/adr/0003-ingestion-and-provenance.md)
-6. [Corpus v0 dataset card](data/corpus/v0/DATASET_CARD.md)
+6. [ADR 0004 — tree storage](docs/adr/0004-tree-storage.md)
+7. [Corpus v0 dataset card](data/corpus/v0/DATASET_CARD.md)
 
 ## Skills this repo is meant to demonstrate
 
-See the [skills map](docs/ROADMAP.md#skills-this-repository-demonstrates). Spec/harness foundations and Markdown provenance are present; tree visualization and cited answers remain planned until M2/M3 tree+answer slices land.
+See the [skills map](docs/ROADMAP.md#skills-this-repository-demonstrates). Provenance and inspectable hierarchy are present; cited answers and evaluation remain planned until M3/M5.
 
 ## Limitations
 
 - Markdown only; no PDF
+- Summaries are optional fixture extractive stubs, not LLM quality claims
 - Prototype — not a production service
-- No production deployment, no regulated-data handling, no professional-advice use
 - Sample corpus is synthetic / CC0-1.0
 
 ## License

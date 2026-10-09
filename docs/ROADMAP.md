@@ -21,14 +21,13 @@ Each skill is proven only when the artifact exists. Profile copy must not presen
 
 ## Now vs next
 
-**Now (Phase 2):** Markdown ingest with checksums, section offsets, warnings, and `reasoning-rag ingest`. Sample corpus: [`data/corpus/v0/`](../data/corpus/v0/). See [ADR 0003](adr/0003-ingestion-and-provenance.md).
+**Now (Phase 3 / M2):** heading-based knowledge tree with stable IDs, optional fixture summaries, JSON round-trip, and `reasoning-rag tree` visualization. See [ADR 0004](adr/0004-tree-storage.md).
 
 **Next public proofs**
 
-1. **Phase 3 / M2 — Inspectable tree:** heading-based knowledge tree, stable node IDs, serialization/visualization.
-2. **M3 — Grounded baseline:** cited answer plus abstention on a known unanswerable question.
-3. **M5 — Measured system:** reproducible eval report with cost and latency.
-4. **M6 — Public beta:** tagged release, security notes, clean-clone quickstart.
+1. **Phase 4 / M3 — Grounded baseline:** cited answer plus abstention on a known unanswerable question.
+2. **M5 — Measured system:** reproducible eval report with cost and latency.
+3. **M6 — Public beta:** tagged release, security notes, clean-clone quickstart.
 
 Supporting GitHub repositories (governance, agentic SDLC, healthcare, harness, control plane) stay backlog until **M5** and are never pinned empty.
 
