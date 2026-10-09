@@ -44,6 +44,12 @@ These are real public repos with a usable README. They are samples or tools, not
 | [MordenizeCodeConvert](https://github.com/ratheshr8/MordenizeCodeConvert) | React + TypeScript UI (Apache-2.0) for code conversion through Azure OpenAI. Keys stay in a local `.env` | `npm install` / `npm run dev` in the README. This is an app shell, not a measured migration benchmark |
 | [Angular-Web-Component-Sample](https://github.com/ratheshr8/Angular-Web-Component-Sample) | Angular Elements data grid (sort, page, row selection) packaged as one JS bundle for plain HTML and Java server-rendered pages | Build (`npm run build:wc`) and the HTML embed snippet in the README |
 
+## Reference sample
+
+[SMART on FHIR tutorial](https://github.com/ratheshr8/-smart-on-fhir-tutorial) is a **reference-only** learning copy of the public SMART on FHIR example. The app launches from an EHR sandbox and reads `Patient` plus a few `Observation` resources (height, blood pressure, cholesterol). Open `index.html` and `example-smart-app/`. The repo README is only a title.
+
+This does not change the headline. It is a sandbox tutorial, not a clinical product and not regulated healthcare delivery.
+
 ## Skills you can verify
 
 - **System design** — ADRs that record options and the choice. Start at [ADR 0001](https://github.com/ratheshr8/reasoning-rag/blob/master/docs/adr/0001-project-scope.md).
@@ -54,4 +60,4 @@ These are real public repos with a usable README. They are samples or tools, not
 
 ## How I work
 
-The profile leads with work a reviewer can open and judge. `reasoning-rag` is the architecture proof. The other linked repos are published tools and UI samples with setup steps in their READMEs.
+The profile leads with work a reviewer can open and judge. `reasoning-rag` is the architecture proof. The other linked repos are published tools, UI samples, or a labeled reference tutorial.
