@@ -1,6 +1,6 @@
 # Product brief — reasoning-rag
 
-**Status:** prototype  
+**Status:** prototype (Phase 1 skeleton)  
 **Owner:** Rathesh R (`ratheshr8`)  
 **Audience:** hiring managers, AI engineers, and peers evaluating architecture judgment
 

@@ -2,6 +2,14 @@
 .venv/
 __pycache__/
 *.pyc
+*.egg-info/
+.eggs/
+dist/
+build/
+.store/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
 .env
 .env.*
 !.env.example

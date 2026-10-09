@@ -21,11 +21,11 @@ Each skill is proven only when the artifact exists. Profile copy must not presen
 
 ## Now vs next
 
-**Now (Phase 0 / M1):** problem, non-goals, corpus/format lock, scope ADR.
+**Now (Phase 1):** installable package, typed contracts, config validation, CLI skeleton (`version` / `config` / `doctor`), Ruff/mypy/pytest CI. See [ADR 0002](adr/0002-language-and-tooling.md).
 
 **Next public proofs**
 
-1. **M2 — Inspectable tree:** Markdown in, source-aware tree out, visualization.
+1. **Phase 2 / M2 — Inspectable tree:** Markdown ingest, provenance, source-aware tree, visualization.
 2. **M3 — Grounded baseline:** cited answer plus abstention on a known unanswerable question.
 3. **M5 — Measured system:** reproducible eval report with cost and latency.
 4. **M6 — Public beta:** tagged release, security notes, clean-clone quickstart.

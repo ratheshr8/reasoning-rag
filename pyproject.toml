@@ -1,0 +1,55 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "reasoning-rag"
+version = "0.1.0"
+description = "Hierarchy-aware document QA with tree-first retrieval, citations, and abstention"
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.12"
+authors = [{ name = "Rathesh R" }]
+keywords = ["rag", "retrieval", "document-qa", "citations", "evaluation"]
+dependencies = [
+  "pydantic>=2.8,<3",
+  "pydantic-settings>=2.4,<3",
+  "typer>=0.12,<1",
+  "rich>=13.7,<15",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.3,<9",
+  "ruff>=0.6,<1",
+  "mypy>=1.11,<2",
+]
+
+[project.scripts]
+reasoning-rag = "reasoning_rag.cli:app"
+
+[project.urls]
+Homepage = "https://github.com/ratheshr8/reasoning-rag"
+Repository = "https://github.com/ratheshr8/reasoning-rag"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+packages = ["reasoning_rag"]
+mypy_path = "src"
+warn_unused_ignores = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
